@@ -48,20 +48,38 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
-        return toPostResponse(post);
+        System.out.println("첫 게시글 찾기 전==========================");
+        Post post1 = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        System.out.println("첫 게시글 찾기 후==========================");
+
+        System.out.println("두 번째 게시글 찾기 전==========================");
+        Post post2 = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        System.out.println("두 번째 게시글 찾기 후==========================");
+
+        System.out.println("post 1 == post 2: " + (post1 == post2));
+
+        return toPostResponse(post1);
     }
 
     @Transactional
     public PostResponse updatePost(Long postId, UpdatePostRequest updatePostRequest) {
+        System.out.println("게시글 찾기 전==========================");
+        // 게시글 찾는 쿼리문 (1)
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
-        System.out.println("Before update========================");
-        post.updatePost(updatePostRequest.getTitle(), updatePostRequest.getContent());
-        System.out.println("After update========================");
-        // Post savedPost = postRepository.save(post);
+        System.out.println("게시글 찾기 후==========================");
 
-        System.out.println("Before return========================");
-        return toPostResponse(post);
+        System.out.println("게시글 수정 전========================");
+        // 게시글 수정 쿼리문..? (2)
+        post.updatePost(updatePostRequest.getTitle(), updatePostRequest.getContent());
+        System.out.println("게시글 수정 후=========================");
+
+        System.out.println("게시글 수정 반영 전=========================");
+        // 게시글 수정 내용 적용 쿼리문 (3)
+        Post savedPost = postRepository.save(post);
+        System.out.println("게시글 수정 반영 후========================");
+
+        System.out.println("반환 직전========================");
+        return toPostResponse(savedPost);
     }
 
     @Transactional
