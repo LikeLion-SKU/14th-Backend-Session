@@ -11,7 +11,7 @@ public class test {
     public static void main(String[] args) {
         SpringApplication.run(com.example.likelionkang.LikeLionKangApplication.class, args);
 
-        System.out.println("hello world!");
+        System.out.println("conflict occur!");
     }
 
 }
