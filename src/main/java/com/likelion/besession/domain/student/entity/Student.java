@@ -15,6 +15,10 @@ public class Student {
 
   private Integer age;
 
+  private String department;
+
+  private Integer student_num;
+
   public Long getId() {
     return id;
   }
