@@ -185,33 +185,25 @@ DELETE FROM student WHERE id = 1;
 ```
 
 ## SQL 과제
-```
+```sql
+mysql> ALTER TABLE student ADD COLUMN department VARCHAR(100)  NOT NULL;
+mysql> ALTER TABLE student
+  -> ADD COLUMN department VARCHAR(100) NOT NULL;
+
 mysql> UPDATE student 
     -> SET department = '소프트웨어'
     -> WHERE id IN (1,2,3);
-Query OK, 3 rows affected (0.02 sec)
-Rows matched: 3  Changed: 3  Warnings: 0
 
 mysql> update student set student_num = '123' where id = 1;
-Query OK, 1 row affected (0.00 sec)
-Rows matched: 1  Changed: 1  Warnings: 0
-
 mysql> update student set student_num = '234' where id = 2;
-Query OK, 1 row affected (0.01 sec)
-Rows matched: 1  Changed: 1  Warnings: 0
-
 mysql> update student set student_num = '345' where id = 3;
-Query OK, 1 row affected (0.01 sec)
-Rows matched: 1  Changed: 1  Warnings: 0
 
 mysql> ALTER TABLE student                                   
     -> MODIFY COLUMN student_num INT;
 
 mysql> insert into student(name, age, student_num, department) values ('신채린', 24, 456, '소프트웨어');
-Query OK, 1 row affected (0.00 sec)
 
 mysql> insert into student(name, age, student_num, department) values ('심서현', 25, 567, '소프트웨어'); 
-Query OK, 1 row affected (0.00 sec)
 
 mysql> select * from student;
 +----+--------+------+-------------+------------+
@@ -223,7 +215,6 @@ mysql> select * from student;
 |  6 | 신채린 |   24 |         456 | 소프트웨어 |
 |  7 | 심서현 |   25 |         567 | 소프트웨어 |
 +----+--------+------+-------------+------------+
-5 rows in set (0.01 sec)
 
 ```
 ![img.png](img.png)
