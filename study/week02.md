@@ -43,3 +43,35 @@ MySQL은 전 세계에서 가장 널리 사용되는 오픈 소스 관계형 데
 - 여러 RDBMS가 있지만 mySql은 오라클에서 인수하여 오랜 기간동안 개발자들이 사용해온 가장 안정적인 DB
 - 설정이 간편하고 성능이 검증되어 있어, 소규모 프로젝트부터 대규모 서비스까지 폭넓게 사용가능.
 
+
+### 과제 sql코드
+```angular2html
+
+ALTER TABLE student ADD COLUMN department VARCHAR(20);
+-- 학과 컬럼 추가(최대 20자 제한)
+ALTER TABLE student ADD COLUMN student_num BIGINT;
+-- 학번 컬럼 추가
+
+UPDATE student SET department = 'computer_engineering'
+WHERE name = '이충환' OR name = '김민호';
+
+UPDATE student SET department = 'software'
+WHERE name = '조민호' OR name = '아기사자';
+
+UPDATE student SET student_num = 2022305070
+WHERE name = '이충환';
+
+UPDATE student SET student_num = 1234123456
+WHERE name NOT IN ('이충환');
+
+
+select * from student
++----+--------------+------+----------------------+-------------+
+| id | name         | age  | department           | student_num |
++----+--------------+------+----------------------+-------------+
+|  1 | 이충환       |   24 | computer_engineering |  2022305070 |
+|  2 | 김민호       |   25 | computer_engineering |  1234123456 |
+|  3 | 조민호       |   25 | sortware             |  1234123456 |
+|  5 | 아기사자     |   20 | sortware             |  1234123456 |
++----+--------------+------+----------------------+-------------+
+```
