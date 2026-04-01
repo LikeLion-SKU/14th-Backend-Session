@@ -1,4 +1,4 @@
-package com.likelion.besessioin;
+package com.likelion.besession;
 
 public class Test {
     public static void main(String[] args) {

@@ -1,10 +1,10 @@
-package com.likelion.besessioin;
+package com.likelion.besession;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BeSessioinApplicationTests {
+class BeSessionApplicationTests {
 
   @Test
   void contextLoads() {

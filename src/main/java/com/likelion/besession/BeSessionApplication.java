@@ -1,13 +1,13 @@
-package com.likelion.besessioin;
+package com.likelion.besession;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BeSessioinApplication {
+public class BeSessionApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(BeSessioinApplication.class, args);
+    SpringApplication.run(BeSessionApplication.class, args);
   }
 
 }
