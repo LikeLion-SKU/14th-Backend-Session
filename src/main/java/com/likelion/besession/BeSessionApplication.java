@@ -1,4 +1,4 @@
-package org.example.besession;
+package com.likelion.besession;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
