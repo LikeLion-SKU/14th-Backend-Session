@@ -14,7 +14,7 @@ public class Student {
     @Column(length = 20)
     private String department;
 
-    private Integer student_num;
+    private Integer studentNum;
 
     public Long getId() {
         return id;
@@ -26,5 +26,13 @@ public class Student {
 
     public Integer getAge() {
         return age;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public Integer getStudentNum() {
+        return studentNum;
     }
 }
