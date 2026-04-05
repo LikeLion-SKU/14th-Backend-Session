@@ -16,6 +16,9 @@ public class Student {
 
     private Integer age;
 
+    private String department;
+    private String studentNum;
+
     public Long getId() {
         return id;
     }
@@ -26,5 +29,11 @@ public class Student {
 
     public Integer getAge() {
         return age;
+    }
+    public String getDepartment() {
+        return department;
+    }
+    public String getStudentNum() {
+        return studentNum;
     }
 }
