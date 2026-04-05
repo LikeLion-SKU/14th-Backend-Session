@@ -146,3 +146,10 @@ ex) GET http://localhost:8080/api/hello
 #### Controller, Entity, Repository 파일을 생성해줍니다!
 #### 프로젝트 실행 후 해당 api 접속 시 MySQL에 저장된 데이터 조회가 가능합니다
 ![besession2.png](besession2.png)
+
+***
+### 2주차 과제 제출
+>"관련 localhost:8080/api/students 스크린샷 이미지 첨부합니다!"
+> 
+![week2_homework.png](week2_homework.png)
+
