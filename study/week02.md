@@ -255,4 +255,5 @@ DB와 연동되는 경우 값이 존재하지 않을 수 있기 때문에 `NULL`
 | `int` | X | 비권장 (Entity) |
 | `Integer` | O | 권장 (Entity) |
 
-![img.png](img.png)
+
+![img_4.png](img_4.png)
