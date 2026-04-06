@@ -15,14 +15,14 @@ public class Student {
     private String name;
     private Integer age;
     private String department;
-    private Long student_num;
+    private String studentNum;
 
     public String getDepartment() {
         return department;
     }
 
-    public Long getStudent_num() {
-        return student_num;
+    public String getStudent_num() {
+        return studentNum;
     }
 
     public Long getId() {
