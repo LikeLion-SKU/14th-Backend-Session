@@ -1,29 +1,20 @@
 package com.likelion.besession.domain.student.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Student {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
+
     private Integer age;
+
+    @Column(length = 20)
     private String department;
-    private String studentNum;
 
-    public String getDepartment() {
-        return department;
-    }
-
-    public String getStudent_num() {
-        return studentNum;
-    }
+    private Integer studentNum;
 
     public Long getId() {
         return id;
@@ -35,5 +26,13 @@ public class Student {
 
     public Integer getAge() {
         return age;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public Integer getStudentNum() {
+        return studentNum;
     }
 }
