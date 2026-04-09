@@ -1,9 +1,6 @@
 package com.example.likelionkang.domain.student.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Student {
@@ -16,9 +13,10 @@ public class Student {
 
     private Integer age;
 
-    private Integer 학번;
+    @Column(name = "student_num")
+    private Integer studentNum;
 
-    private String 학과;
+    private String department;
 
     public Long getId() {
         return id;
