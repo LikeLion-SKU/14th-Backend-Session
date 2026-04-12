@@ -85,4 +85,4 @@ DLETE FROM <테이블명>WERE <항목> = '항목 내용' <- 데이터 삭제
 
 ## 실행 결과
 
-![result](images/result.png)
+![result](../images/result.png)
