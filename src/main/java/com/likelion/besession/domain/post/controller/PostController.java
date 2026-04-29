@@ -52,6 +52,26 @@ public class PostController {
                 .body(response);
     }
 
+    @Operation(summary = "게시글 최신순 조회",
+            description = "게시글을 최신 생성일 기준으로 정렬하여 조회하는 API")
+    @GetMapping("/posts/latest")
+    public ResponseEntity<List<PostResponse>> getLatestPosts(){
+        List<PostResponse> responses = postService.getLatestPosts();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responses);
+    }
+
+    @Operation(summary = "게시글 조회수순 조회",
+            description = "게시글을 조회수가 많은 순으로 정렬하여 조회하는 API")
+    @GetMapping("/posts/best")
+    public ResponseEntity<List<PostResponse>> getBestPosts(){
+        List<PostResponse> responses = postService.getBestPosts();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responses);
+    }
+
     @Operation(summary = "게시글 수정",
             description = "게시글 ID와 요청으로 전달된 게시글 정보로 게시글을 수정하는 API")
     @PutMapping("/posts/{post-id}")

@@ -52,11 +52,25 @@ public class PostService {
         return postList.stream().map(post -> toPostResponse(post)).toList();
     }
 
+    @Transactional
     public PostResponse getPostById(Long postId){
         Post post = postRepository.findById(postId).orElseThrow(()->
                 new IllegalArgumentException("post Not Found"));
+        post.increaseViewCount();
 
         return toPostResponse(post);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostResponse> getLatestPosts(){
+        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
+        return postList.stream().map(post -> toPostResponse(post)).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostResponse> getBestPosts(){
+        List<Post> postList = postRepository.findAllByOrderByViewCountDesc();
+        return postList.stream().map(post -> toPostResponse(post)).toList();
     }
 
     @Transactional
@@ -85,6 +99,7 @@ public class PostService {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .viewCount(post.getViewCount())
                 .build();
     }
 }
