@@ -1,5 +1,6 @@
 package com.likelion.besession.domain.post.entity;
 
+import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,9 @@ public class Post extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String content;
+
+    public void updatePost(UpdatePostRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+    }
 }
