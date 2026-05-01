@@ -13,6 +13,9 @@ public record PostResponse(
         String title,
 
         @Schema(description = "게시글 내용", example = "Entity, Controller, Swagger를 익혀요")
-        String content
+        String content,
+
+        @Schema(description = "게시글 조회수", example = "Entity, Controller, Swagger를 익혀요")
+        Integer viewCount
 ) {
 }

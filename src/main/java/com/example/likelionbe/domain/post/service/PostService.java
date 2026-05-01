@@ -4,6 +4,7 @@ import com.example.likelionbe.domain.post.dto.request.CreatePostRequest;
 import com.example.likelionbe.domain.post.dto.request.UpdatePostRequest;
 import com.example.likelionbe.domain.post.dto.response.PostResponse;
 import com.example.likelionbe.domain.post.entity.Post;
+import com.example.likelionbe.domain.post.entity.PostFilter;
 import com.example.likelionbe.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,14 +37,25 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostList() {
-        List<Post> posts = postRepository.findAll();
+    public List<PostResponse> getPostList(PostFilter filter) {
+        List<Post> posts;
+        if(filter==null) {
+            posts = postRepository.findAll();
+            return posts.stream().map(this::toPostResponse).toList();
+        }
+
+        if(filter.equals(PostFilter.LATEST)){
+            posts = postRepository.findAllByOrderByCreatedAtDesc();
+        } else {
+            posts = postRepository.findAllByOrderByViewCountDesc();
+        }
         return posts.stream().map(this::toPostResponse).toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("post not found"));
+        post.viewPost();
         return toPostResponse(post);
     }
 
@@ -58,6 +70,7 @@ public class PostService {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .viewCount(post.getViewCount())
                 .build();
     }
 }

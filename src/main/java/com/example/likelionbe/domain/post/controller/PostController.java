@@ -4,6 +4,7 @@ import com.example.likelionbe.domain.post.dto.request.CreatePostRequest;
 import com.example.likelionbe.domain.post.dto.request.UpdatePostRequest;
 import com.example.likelionbe.domain.post.dto.response.PostResponse;
 import com.example.likelionbe.domain.post.entity.Post;
+import com.example.likelionbe.domain.post.entity.PostFilter;
 import com.example.likelionbe.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,8 +36,8 @@ public class PostController {
 
     @Operation(summary = "게시글 목록 조회", description = "게시글 목록 조회 API 입니다.")
     @GetMapping("/posts")
-    public ResponseEntity<List<PostResponse>> getPostList() {
-        return ResponseEntity.ok(postService.getPostList());
+    public ResponseEntity<List<PostResponse>> getPostList(@RequestParam PostFilter filter) {
+        return ResponseEntity.ok(postService.getPostList(filter));
     }
 
     @Operation(summary = "게시글 단건 조회", description = "게시글 단건 조회 API 입니다.")

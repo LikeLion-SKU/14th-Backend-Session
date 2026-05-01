@@ -20,8 +20,16 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer viewCount = 0;
+
     public void updatePost(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void viewPost(){
+        this.viewCount++;
     }
 }
