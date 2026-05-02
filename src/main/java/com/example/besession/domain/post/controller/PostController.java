@@ -73,4 +73,16 @@ public class PostController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
+
+    @Operation(summary = "게시글 최신순 조회", description = "게시글을 최신순으로 조회하는 API")
+    @GetMapping("/latest")
+    public List<PostResponse> getPostsLatest() {
+        return postService.getPostsLatest();
+    }
+
+    @Operation(summary = "게시글 조회수 조회", description = "게시글을 조회수 순으로 조회하는 API")
+    @GetMapping("/popular")
+    public List<PostResponse> getPostsPopular() {
+        return postService.getPostsPopular();
+    }
 }

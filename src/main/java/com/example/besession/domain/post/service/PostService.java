@@ -55,10 +55,12 @@ public class PostService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional // readOnly=true 제거
     //게시글 단일 조회
     public PostResponse findById(Long PostId) {
         Post post = postRepository.findById(PostId).orElseThrow(() -> new IllegalArgumentException("post Not Found"));
+        //조회수 증가
+        post.increaseViewCount();
         return toPostResponse(post);
     }
 
@@ -88,13 +90,30 @@ public class PostService {
           return true;
     }
 
+    // 최신순
+    @Transactional(readOnly = true)
+    public List<PostResponse> getPostsLatest() {
+        return postRepository.findAllByOrderByIdDesc()
+                .stream()
+                .map(this::toPostResponse)
+                .toList();
+    }
+
+    //조회순
+    @Transactional(readOnly = true)
+    public List<PostResponse> getPostsPopular() {
+        return postRepository.findAllByOrderByViewCountDesc()
+                .stream()
+                .map(this::toPostResponse)
+                .toList();
+    }
+
     private PostResponse toPostResponse(Post post) {
         return PostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .viewCount(post.getViewCount())
                 .build();
     }
-
-
 }

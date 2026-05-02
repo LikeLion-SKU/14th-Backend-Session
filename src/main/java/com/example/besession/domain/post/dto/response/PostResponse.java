@@ -17,4 +17,7 @@ public class PostResponse {
 
     @Schema(description = "게시글 내용", example = "Entity, Controller, Swagger를 익혀요")
     private String content;
+
+    @Schema(description = "게시글 조회수", example = "2")
+    private Long viewCount;
 }
