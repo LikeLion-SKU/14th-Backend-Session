@@ -6,6 +6,7 @@ import com.example.likelionkang.domain.post.dto.response.PostResponse;
 import com.example.likelionkang.domain.post.entity.Post;
 import com.example.likelionkang.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,27 +32,25 @@ public class PostService {
         // 3. 반환
         return toPostResponse(savedPost);
     }
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts1() {
-        // 1. List 객체를 미리 생성
-        List<PostResponse> postResponses = new ArrayList<>();
-        // 2. DB에서 Post 목록을 불러오기
-        List<Post> postList = postRepository.findAll();
-        // 3. Post 목록을 PostResponse에 맞게 변환해서 반환
-        for (Post post : postList) {
-            postResponses.add(PostResponse.builder()
-                    .postId(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .build());
-
-        }
-        return postResponses;
-    }
+    /**
+     * 게시글 전체 조회 (정렬 기능 추가)
+     * @param sortBy "latest" (최신순) 또는 "views" (조회순)
+     */
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts2(){
-        return postRepository.findAll()
-                .stream().map(this::toPostResponse)
+    public List<PostResponse> getAllPosts(String sortBy) {
+        Sort sort;
+
+        if ("views".equals(sortBy)) {
+            // 조회수 많은 순 (내림차순)
+            sort = Sort.by(Sort.Direction.DESC, "viewCount");
+        } else {
+            // 최신순 (기본값, ID 또는 생성일 기준 내림차순)
+            sort = Sort.by(Sort.Direction.DESC, "id");
+        }
+
+        return postRepository.findAll(sort)
+                .stream()
+                .map(this::toPostResponse)
                 .toList();
     }
 

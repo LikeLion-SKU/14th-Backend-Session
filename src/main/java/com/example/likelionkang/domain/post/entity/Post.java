@@ -23,9 +23,18 @@ public class Post extends BaseTimeEntitiy {
     @Column(nullable = false)
     private String content;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private int viewCount = 0;
+
     public  void  updatePost(UpdatePostRequest request) {
         this.title = request.getTitle();
         this.content = request.getContent();
+    }
+
+    // 조회수 증가 로직 추가
+    public void incrementViewCount() {
+        this.viewCount++;
     }
 }
 

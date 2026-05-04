@@ -39,10 +39,12 @@ public class PostController {
                description = "모든 게시글 목록을 조회하는 API")
 
     @GetMapping("/posts")
-    public ResponseEntity<List<PostResponse>> getAllPosts2() {
-        List<PostResponse> responses = postService.getAllPosts2();
+    public ResponseEntity<List<PostResponse>> getAllPosts(@RequestParam(defaultValue = "latest") String sortBy) {
+        // 서비스의 getAllPosts 메서드에 정렬 기준을 전달합니다.
+        List<PostResponse> responses = postService.getAllPosts(sortBy);
+
         return ResponseEntity
-                .status((HttpStatus.OK))
+                .status(HttpStatus.OK)
                 .body(responses);
     }
     @Operation(summary = "게시글 단건 조회",
