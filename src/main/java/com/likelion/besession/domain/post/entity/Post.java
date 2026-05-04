@@ -24,10 +24,16 @@ public class Post extends BaseTimeEntity {
     private String content;
 
     @Column(name = "view_count")
-    private Long viewCount;
+    @Builder.Default
+    private Long viewCount = 0L;
 
     public void updatePost(UpdatePostRequest updatePostRequest) {
         this.title = updatePostRequest.getTitle();
         this.content = updatePostRequest.getContent();
+    }
+
+    // 조회수 증가 로직
+    public void viewPost(){
+        this.viewCount++;
     }
 }

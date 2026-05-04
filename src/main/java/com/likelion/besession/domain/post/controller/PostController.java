@@ -3,6 +3,7 @@ package com.likelion.besession.domain.post.controller;
 import com.likelion.besession.domain.post.dto.request.CreatePostRequest;
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.domain.post.dto.response.PostResponse;
+import com.likelion.besession.domain.post.entity.PostSortType;
 import com.likelion.besession.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,34 +39,17 @@ public class PostController {
     @Operation(summary = "모든 게시글 정렬 조회", description = "모든 게시글을 요청받은 정렬 기준으로 조회하는 API")
     public ResponseEntity<List<PostResponse>> getAllPosts(
             @Parameter(description = "정렬 기준 - createdDate, viewCount, id(default)", example = "viewCount")
-            @RequestParam(required = false, defaultValue = "id", value = "sortType") String sortType) {
+            @RequestParam(required = false, defaultValue = "id", value = "sortType") PostSortType sortType) {
 
         // 반환할 결과를 저장해둘 리스트 선언
         List<PostResponse> postResponses;
 
         // 서비스 메소드 하나 만들어서, 매개변수로 sortType 전달해주는 메소드 호출
         postResponses = postService.getAllPostsWithSortType(sortType);
-//        // 제시 된 정렬 기준에 따라 서비스 메소드 호출
-//        switch (sortType) {
-//            case "viewCount":
-//                postResponses = postService.getALlPostsByViewCount();
-//                break;
-//            case "createdDate":
-//                postResponses = postService.getALlPostsByCreatedDate();
-//                break;
-//            default:
-//                postResponses = postService.getAllPosts1();
-//                break;
-//        }
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(postResponses);
-
-//        List<PostResponse> postResponse = postService.getAllPosts1();
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(postResponse);
     }
 
     // ID 기반 단일 게시글 조회
@@ -103,27 +87,4 @@ public class PostController {
                 .status(HttpStatus.OK)
                 .body(isDeleted);
     }
-
-//    // 조회수 내림차순 게시글 조회
-//    @GetMapping("/posts/viewCount")
-//    @Operation(summary = "게시글 조회수 내림차순 조회", description = "게시글 ")
-//    public ResponseEntity<List<PostResponse>> getAllPostsByViewCount(){
-//
-//        List<PostResponse> postResponses = postService.getALlPostsByViewCount();
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(postResponses);
-//    }
-//
-//    @GetMapping("/posts/createdDate")
-//    @Operation(summary = "게시글 생성일자 내림차순 조회", description = "dd")
-//    public ResponseEntity<List<PostResponse>> getAllPostsByCreatedDate(){
-//
-//        List<PostResponse> postResponses = postService.getALlPostsByCreatedDate();
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(postResponses);
-//    }
 }
