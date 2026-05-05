@@ -1,6 +1,6 @@
 package com.likelion.besession.domain.post.entity;
 
-import com.likelion.besession.domain.post.request.UpdatePostRequest;
+import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class Post extends BaseTimeEntity {
     // 생성자, Getter, Builder (lombok)
 
     @Column(nullable = false)
-    @Builder.Default // 기본값을 0으로
+    @Builder.Default // 기본값을 0L으로
     private long viewCount = 0L; // long은 null을 받을 수 없음.
 
     // 조회수 증가 로직

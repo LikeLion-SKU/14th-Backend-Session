@@ -1,4 +1,4 @@
-package com.likelion.besession.domain.post.response;
+package com.likelion.besession.domain.post.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

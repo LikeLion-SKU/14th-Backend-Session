@@ -1,10 +1,11 @@
 package com.likelion.besession.domain.post.service;
 
 import com.likelion.besession.domain.post.entity.Post;
+import com.likelion.besession.domain.post.entity.PostFilter;
 import com.likelion.besession.domain.post.repository.PostRepository;
-import com.likelion.besession.domain.post.request.CreatePostRequest;
-import com.likelion.besession.domain.post.request.UpdatePostRequest;
-import com.likelion.besession.domain.post.response.PostResponse;
+import com.likelion.besession.domain.post.dto.request.CreatePostRequest;
+import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
+import com.likelion.besession.domain.post.dto.response.PostResponse;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,16 +49,25 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllposts2(){
-        List<Post> postList = postRepository.findAll();
+    public List<PostResponse> getAllposts2(PostFilter filter){
+        List<Post> posts;
 
-        List<PostResponse> postResponseList =
-                postList.stream().map(post-> toPostResponse(post)).toList();
-        return postResponseList;
+        if (filter == PostFilter.LATEST) {
+            posts = postRepository.findAllByOrderByIdDesc();
+        } else if (filter == PostFilter.VIEW_COUNT) {
+            posts = postRepository.findAllByOrderByViewCountDesc();
+        } else {
+            posts = postRepository.findAll();
+        }
+
+        return posts.stream()
+                .map(this::toPostResponse)
+                .toList();
     }
     @Transactional
     public PostResponse getPostById(Long postId){
         Post post = postRepository.findById(postId).orElseThrow(()-> new IllegalArgumentException("post not Found"));
+        post.increaseViewCount();
         return toPostResponse(post);
     }
     @Transactional
@@ -66,7 +76,7 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not Found"));
         // 2. 수정할 내용으로 바꾸기
         post.updatePost(request);
-        // ?. DB에 수정한 내용 저장
+        // ?. DB에 수정한 내용 저장 (없어도 된다)
         postRepository.save(post);
 
         // 3. PostResponse 형태로 변환해서 반환하기
@@ -79,22 +89,7 @@ public class PostService {
         return true;
 
     }
-    //최신
-    @Transactional(readOnly = true)
-    public List<PostResponse> getPostsLatest() {
-        return postRepository.findAllByOrderByIdDesc()
-                .stream()
-                .map(this::toPostResponse)
-                .toList();
-    }
-    //조회
-    @Transactional(readOnly = true)
-    public List<PostResponse> getPostsPopular() {
-        return postRepository.findAllByOrderByViewCountDesc()
-                .stream()
-                .map(this::toPostResponse)
-                .toList();
-    }
+
 
     private PostResponse toPostResponse(Post post){
         return PostResponse.builder()
