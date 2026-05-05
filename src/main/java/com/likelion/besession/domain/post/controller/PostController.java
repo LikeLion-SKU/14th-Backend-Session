@@ -6,6 +6,7 @@ import com.likelion.besession.domain.post.dto.response.PostResponse;
 import com.likelion.besession.domain.post.entity.Post;
 import com.likelion.besession.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,8 @@ public class PostController {
   @Operation(summary = "게시글 생성",
              description = "요청으로 전달된 게시글 정보로 새로운 게시글을 생성하는 API")
   @PostMapping("/posts")
-  public ResponseEntity<PostResponse> createPost(@RequestBody CreatePostRequest request) {
+  public ResponseEntity<PostResponse> createPost(
+          @Parameter(description = "게시글 작성 내용") @RequestBody CreatePostRequest request) {
     PostResponse postResponse = postService.createPost(request);
 
     return ResponseEntity
@@ -54,7 +56,8 @@ public class PostController {
   @Operation(summary = "게시글 단건 조회",
              description = "게시글 ID로 특정 게시글을 조회하는 API")
   @GetMapping("/posts/{post-id}")
-  public ResponseEntity<PostResponse> getPostById(@PathVariable("post-id") Long postId) {
+  public ResponseEntity<PostResponse> getPostById(
+          @Parameter(description = "특정 게시글 ID") @PathVariable("post-id") Long postId) {
     PostResponse postResponse = postService.getPostById(postId);
 
     return ResponseEntity
@@ -66,7 +69,8 @@ public class PostController {
              description = "게시글 ID와 요청으로 전달된 게시글 정보로 게시글을 수정하는 API")
   @PutMapping("/posts/{post-id}")
   public ResponseEntity<PostResponse> updatePost(
-      @PathVariable("post-id") Long postId, @RequestBody UpdatePostRequest request) {
+          @Parameter(description = "특정 게시글 ID") @PathVariable("post-id") Long postId,
+          @Parameter(description = "게시글 수정 내용") @RequestBody UpdatePostRequest request) {
     PostResponse postResponse = postService.updatePost(postId, request);
 
     return ResponseEntity
@@ -77,7 +81,8 @@ public class PostController {
   @Operation(summary = "게시글 삭제",
              description = "게시글 ID로 특정 게시글을 삭제하는 API")
   @DeleteMapping("/posts/{post-id}")
-  public ResponseEntity<Boolean> deletePost(@PathVariable("post-id") Long postId) {
+  public ResponseEntity<Boolean> deletePost(
+          @Parameter(description = "특정 게시글 ID") @PathVariable("post-id") Long postId) {
     Boolean result = postService.deletePost(postId);
 
     return ResponseEntity
