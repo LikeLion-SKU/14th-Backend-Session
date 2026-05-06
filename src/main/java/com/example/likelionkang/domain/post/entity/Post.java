@@ -1,8 +1,7 @@
 package com.example.likelionkang.domain.post.entity;
-
-
 import com.example.likelionkang.domain.global.common.BaseTimeEntitiy;
 import com.example.likelionkang.domain.post.dto.request.UpdatePostRequest;
+import com.example.likelionkang.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,11 +10,16 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "post")
 public class Post extends BaseTimeEntitiy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(nullable = false)
     private String title;
@@ -32,7 +36,6 @@ public class Post extends BaseTimeEntitiy {
         this.content = request.getContent();
     }
 
-    // 조회수 증가 로직 추가
     public void incrementViewCount() {
         this.viewCount++;
     }
