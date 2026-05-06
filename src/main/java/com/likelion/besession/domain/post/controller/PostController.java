@@ -49,7 +49,27 @@ public class PostController {
         .body(responses);
   }
 
-  @Operation(summary="게시글 단건 조회", description = "게시글 ID로 특정 게시글을 조회하는 API")
+  @Operation(summary="게시글 최신순 조회", description = "게시글 목록을 최신순(생성일 내림차순)으로 조회하는 API")
+  @GetMapping("/posts/sort/latest")
+  public ResponseEntity<List<PostResponse>> getPostsSortedByLatest() {
+    List<PostResponse> responses = postService.getPostsSortedByLatest();
+
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(responses);
+  }
+
+  @Operation(summary="게시글 조회수 많은 순 조회", description = "게시글 목록을 조회수 내림차순으로 조회하는 API")
+  @GetMapping("/posts/sort/popular")
+  public ResponseEntity<List<PostResponse>> getPostsSortedByViewCount() {
+    List<PostResponse> responses = postService.getPostsSortedByViewCount();
+
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(responses);
+  }
+
+  @Operation(summary="게시글 단건 조회", description = "게시글 ID로 특정 게시글을 조회하는 API (조회 시 조회수 1 증가)")
   @GetMapping("/posts/{post-id}")
   public ResponseEntity<PostResponse> getPostById(@PathVariable("post-id") Long postId) {
     PostResponse response = postService.getPostById(postId);

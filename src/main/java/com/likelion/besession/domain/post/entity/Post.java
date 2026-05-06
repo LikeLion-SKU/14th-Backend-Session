@@ -1,12 +1,17 @@
 package com.likelion.besession.domain.post.entity;
 
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
+import com.likelion.besession.domain.user.entity.User;
 import com.likelion.besession.global.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name ="post")
 public class Post extends BaseTimeEntity {
 
   @Id
@@ -29,9 +35,21 @@ public class Post extends BaseTimeEntity {
   @Column(nullable = false)
   private String content;
 
+  @Builder.Default
+  @Column(nullable = false)
+  private Long viewCount = 0L;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
+
   public void updatePost(UpdatePostRequest request) {
     this.title = request.getTitle();
     this.content = request.getContent();
+  }
+
+  public void increaseViewCount() {
+    this.viewCount++;
   }
 
 }

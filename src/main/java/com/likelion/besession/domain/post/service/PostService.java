@@ -59,14 +59,29 @@ public class PostService {
     return postList.stream().map(post -> toPostResponse(post)).toList();
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public PostResponse getPostById(Long id) {
     //1. DB에서 해당 id를 가진 Post가져오기
     Post post = postRepository.findById(id).orElseThrow(() ->
         new IllegalArgumentException("Post not found"));
 
+    //2. 조회수 증가
+    post.increaseViewCount();
+
     //Response형태로 리턴하기
     return toPostResponse(post);
+  }
+
+  @Transactional(readOnly = true)
+  public List<PostResponse> getPostsSortedByLatest() {
+    return postRepository.findAllByOrderByCreatedAtDesc()
+        .stream().map(this::toPostResponse).toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<PostResponse> getPostsSortedByViewCount() {
+    return postRepository.findAllByOrderByViewCountDesc()
+        .stream().map(this::toPostResponse).toList();
   }
 
   @Transactional
@@ -98,6 +113,7 @@ public class PostService {
         .postId(post.getId())
         .title(post.getTitle())
         .content(post.getContent())
+        .viewCount(post.getViewCount())
         .build();
   }
 
