@@ -90,24 +90,23 @@ public class PostService {
           return true;
     }
 
-    // 최신순
+    // 게시글 목록 조회
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostsLatest() {
+    public List<PostResponse> getPosts(String sort) {
+        if ("popular".equals(sort)) {
+            return postRepository.findAllByOrderByViewCountDesc()
+                    .stream()
+                    .map(this::toPostResponse)
+                    .toList();
+        }
+
         return postRepository.findAllByOrderByIdDesc()
                 .stream()
                 .map(this::toPostResponse)
                 .toList();
     }
 
-    //조회순
-    @Transactional(readOnly = true)
-    public List<PostResponse> getPostsPopular() {
-        return postRepository.findAllByOrderByViewCountDesc()
-                .stream()
-                .map(this::toPostResponse)
-                .toList();
-    }
-
+    // 게시글 응답 변환
     private PostResponse toPostResponse(Post post) {
         return PostResponse.builder()
                 .postId(post.getId())

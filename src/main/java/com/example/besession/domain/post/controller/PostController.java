@@ -5,6 +5,7 @@ import com.example.besession.domain.post.dto.request.UpdatePostRequest;
 import com.example.besession.domain.post.dto.response.PostResponse;
 import com.example.besession.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class PostController {
 
     }
 
-    @Operation(summary="게시글 전체 조회",description = "모든 게시글 목록을 조회하는 API")
+/*    @Operation(summary="게시글 전체 조회",description = "모든 게시글 목록을 조회하는 API")
     @GetMapping("/posts")
     public ResponseEntity<List<PostResponse>> getAllPosts() {
 
@@ -42,7 +43,7 @@ public class PostController {
                 .status(HttpStatus.OK)
                 .body(response);
 
-    }
+    }*/
 
 @Operation(summary = "게시글 단건 조회",description = "게시글 ID로 특정 게시글 조회하는 API")
     @GetMapping("/posts/{postId}")
@@ -73,16 +74,16 @@ public class PostController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
+    @Operation(summary = "게시글 목록 조회", description = "게시글을 최신순 또는 인기순으로 조회하는 API")
+    @GetMapping("/posts")
+    public ResponseEntity<List<PostResponse>> getPosts(
+            @Parameter(description = "정렬 기준: latest=최신순, popular=인기순", example = "latest")
+            @RequestParam(defaultValue = "latest") String sort
+    ) {
+        List<PostResponse> response = postService.getPosts(sort);
 
-    @Operation(summary = "게시글 최신순 조회", description = "게시글을 최신순으로 조회하는 API")
-    @GetMapping("/latest")
-    public List<PostResponse> getPostsLatest() {
-        return postService.getPostsLatest();
-    }
-
-    @Operation(summary = "게시글 조회수 조회", description = "게시글을 조회수 순으로 조회하는 API")
-    @GetMapping("/popular")
-    public List<PostResponse> getPostsPopular() {
-        return postService.getPostsPopular();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }
