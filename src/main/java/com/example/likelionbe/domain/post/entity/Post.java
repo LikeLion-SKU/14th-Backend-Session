@@ -1,5 +1,6 @@
 package com.example.likelionbe.domain.post.entity;
 
+import com.example.likelionbe.domain.user.entity.User;
 import com.example.likelionbe.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +24,10 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     @Builder.Default
     private Integer viewCount = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public void updatePost(String title, String content) {
         this.title = title;
