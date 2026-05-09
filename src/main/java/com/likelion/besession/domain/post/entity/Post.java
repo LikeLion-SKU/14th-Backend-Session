@@ -1,5 +1,6 @@
 package com.likelion.besession.domain.post.entity;
 
+import com.likelion.besession.domain.user.entity.User;
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -13,10 +14,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "post")
 public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private  User user;
 
     @Column(nullable = false)
     private  String title;
