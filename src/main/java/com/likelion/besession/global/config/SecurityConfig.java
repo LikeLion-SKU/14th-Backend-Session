@@ -1,5 +1,6 @@
 package com.likelion.besession.global.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,15 +14,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration // 설정 클래스
 @EnableWebSecurity // Spring Security 활성화
 @EnableMethodSecurity // 메서드 단위 권한 활성화
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+  private final CorsConfigurationSource corsConfigurationSource;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
+        // CorsConfig에서 작성한 CORS 설정을 Spring Security에 연결
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
+
         // JWT 기반 API 서버에서는 CSRF 비활성화
         .csrf(AbstractHttpConfigurer::disable)
 
