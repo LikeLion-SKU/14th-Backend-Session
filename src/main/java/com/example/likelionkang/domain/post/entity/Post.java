@@ -1,5 +1,5 @@
 package com.example.likelionkang.domain.post.entity;
-import com.example.likelionkang.domain.global.common.BaseTimeEntitiy;
+import com.example.likelionkang.domain.global.BaseTimeEntitiy;
 import com.example.likelionkang.domain.post.dto.request.UpdatePostRequest;
 import com.example.likelionkang.domain.user.entity.User;
 import jakarta.persistence.*;

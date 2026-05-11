@@ -1,4 +1,4 @@
-package com.example.likelionkang.domain.global.common;
+package com.example.likelionkang.domain.global;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
