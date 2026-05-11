@@ -14,3 +14,7 @@ spring:
 
 cors:
   allowed-origins: http://localhost:3000,http://localhost:5173
+
+jwt:
+  secret: V7mQp9xR2sK8zN4bY6tHcL3wE5uJfA1dG9rXp2qW
+  access-token-expiration: 1800000 #30분
