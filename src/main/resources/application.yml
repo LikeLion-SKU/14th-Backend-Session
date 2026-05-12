@@ -11,3 +11,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+cors:
+  allowed-origins: http://localhost:3000, http://localhost:5173
+
+jwt:
+  secret: RWmnYnqBX93r0Ymzv2MziSt0mBAxaCURuLqZ49HBDuq
+  access-token-expiration: 1800000
