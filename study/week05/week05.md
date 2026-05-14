@@ -23,11 +23,6 @@ Repository는 **Database와 통신하는 계층**이다.
 
 Spring Data JPA의 `JpaRepository`를 상속하면 기본적인 CRUD 기능을 직접 구현하지 않아도 사용할 수 있다.
 
-```java
-public interface PostRepository extends JpaRepository<Post, Long> {
-}
-```
-
 ### Repository의 역할
 
 - Entity를 DB에 저장
@@ -111,17 +106,6 @@ JPQL은 JPA에서 사용하는 객체지향 쿼리 언어이다.
 
 SQL은 테이블명과 컬럼명을 기준으로 작성하지만, JPQL은 엔티티명과 필드명을 기준으로 작성한다.
 
-### SQL과 JPQL 비교
-
-```sql
-SELECT * FROM posts WHERE title = '제목';
-```
-
-```java
-@Query("SELECT p FROM Post p WHERE p.title = :title")
-List<Post> findByTitle(@Param("title") String title);
-```
-
 ---
 
 ## 7. 사용자 정의 쿼리
@@ -130,25 +114,13 @@ List<Post> findByTitle(@Param("title") String title);
 
 JPA는 메서드 이름을 분석하여 자동으로 쿼리를 생성한다.
 
-예시:
-
-```java
-List<Post> findByTitleAndWriter(String title, String writer);
-List<Post> findTop2ByTitle(String title);
-```
-
-메서드 이름만으로 조건 조회가 가능하다.
+메서드 이름만으로 조건 조회가 가능하다. (예: `findByTitleAndWriter`, `findTop2ByTitle`)
 
 ### 7-2. @Query 방식
 
 `@Query`는 메서드 위에 직접 JPQL을 작성할 때 사용한다.
 
 주의할 점은 SQL이 아니라 **JPQL**을 작성해야 한다는 것이다.
-
-```java
-@Query("SELECT p FROM Post p WHERE p.title = :title")
-List<Post> findByTitle(@Param("title") String title);
-```
 
 ---
 
@@ -175,37 +147,15 @@ DTO는 **Data Transfer Object**의 약자이다.
 
 ### CreatePostRequest
 
-게시글 생성 요청을 받을 때 사용하는 DTO이다.
-
-```java
-public class CreatePostRequest {
-    private String title;
-    private String content;
-}
-```
+게시글 생성 요청을 받을 때 사용하는 DTO로, title과 content 필드를 가진다.
 
 ### UpdatePostRequest
 
-게시글 수정 요청을 받을 때 사용하는 DTO이다.
-
-```java
-public class UpdatePostRequest {
-    private String title;
-    private String content;
-}
-```
+게시글 수정 요청을 받을 때 사용하는 DTO로, title과 content 필드를 가진다.
 
 ### PostResponse
 
-게시글 응답을 반환할 때 사용하는 DTO이다.
-
-```java
-public class PostResponse {
-    private Long postId;
-    private String title;
-    private String content;
-}
-```
+게시글 응답을 반환할 때 사용하는 DTO로, postId, title, content 필드를 가진다.
 
 ---
 
@@ -218,14 +168,6 @@ public class PostResponse {
 - 생성자보다 직관적
 - 매개변수 순서에 영향을 받지 않음
 - 필요한 값만 선택적으로 설정 가능
-
-```java
-PostResponse response = PostResponse.builder()
-        .postId(post.getId())
-        .title(post.getTitle())
-        .content(post.getContent())
-        .build();
-```
 
 Request DTO에는 테스트용을 제외하고는 굳이 사용할 필요가 없다.
 
@@ -246,17 +188,6 @@ Controller는 Service의 메서드를 호출하고, Service는 Repository의 메
 - DTO와 Entity 변환
 - 트랜잭션 관리
 - 예외 처리
-
-```java
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class PostService {
-
-    private final PostRepository postRepository;
-
-}
-```
 
 ---
 
@@ -281,12 +212,6 @@ Spring Data JPA에서 자주 사용하는 기본 메서드는 다음과 같다.
 
 내부적으로 `@Component`를 포함하고 있어 Spring Bean으로 등록된다.
 
-```java
-@Service
-public class PostService {
-}
-```
-
 ---
 
 ## 14. @Transactional
@@ -294,13 +219,6 @@ public class PostService {
 `@Transactional`은 트랜잭션을 적용하기 위한 어노테이션이다.
 
 데이터베이스 작업이 모두 성공하면 Commit되고, 중간에 오류가 발생하면 Rollback된다.
-
-```java
-@Transactional
-public PostResponse createPost(CreatePostRequest request) {
-    // 비즈니스 로직
-}
-```
 
 ### 주의사항
 
@@ -350,22 +268,9 @@ public PostResponse createPost(CreatePostRequest request) {
 
 클래스 위에 `@Transactional`을 붙이면 해당 클래스의 모든 public 메서드에 트랜잭션이 적용된다.
 
-```java
-@Service
-@Transactional
-public class PostService {
-}
-```
-
 ### 메서드 단위 선언
 
 특정 메서드에만 트랜잭션을 적용할 수 있다.
-
-```java
-@Transactional
-public PostResponse updatePost(Long postId, UpdatePostRequest request) {
-}
-```
 
 ---
 
@@ -373,66 +278,10 @@ public PostResponse updatePost(Long postId, UpdatePostRequest request) {
 
 Controller에서는 직접 Repository를 호출하지 않고 Service를 호출하도록 변경한다.
 
-### 게시글 생성
-
-```java
-@PostMapping("/posts")
-public ResponseEntity<PostResponse> createPost(
-        @RequestBody CreatePostRequest request
-) {
-    PostResponse response = postService.createPost(request);
-
-    return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(response);
-}
-```
-
-### 게시글 조회
-
-```java
-@GetMapping("/posts/{postId}")
-public ResponseEntity<PostResponse> getPost(
-        @PathVariable Long postId
-) {
-    PostResponse response = postService.getPostById(postId);
-
-    return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(response);
-}
-```
-
-### 게시글 수정
-
-```java
-@PutMapping("/posts/{postId}")
-public ResponseEntity<PostResponse> updatePost(
-        @PathVariable Long postId,
-        @RequestBody UpdatePostRequest request
-) {
-    PostResponse response = postService.updatePost(postId, request);
-
-    return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(response);
-}
-```
-
-### 게시글 삭제
-
-```java
-@DeleteMapping("/posts/{postId}")
-public ResponseEntity<Boolean> deletePost(
-        @PathVariable Long postId
-) {
-    boolean result = postService.deletePost(postId);
-
-    return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(result);
-}
-```
+- 게시글 생성: `POST /posts` → Service의 createPost 호출 → 201 Created 반환
+- 게시글 조회: `GET /posts/{postId}` → Service의 getPostById 호출 → 200 OK 반환
+- 게시글 수정: `PUT /posts/{postId}` → Service의 updatePost 호출 → 200 OK 반환
+- 게시글 삭제: `DELETE /posts/{postId}` → Service의 deletePost 호출 → 200 OK 반환
 
 ---
 
@@ -442,19 +291,9 @@ public ResponseEntity<Boolean> deletePost(
 
 HTTP 요청 Body의 JSON 데이터를 Java 객체로 변환한다.
 
-```java
-@RequestBody CreatePostRequest request
-```
-
 ### @PathVariable
 
 URL 경로에 포함된 값을 메서드 파라미터로 바인딩한다.
-
-```java
-@GetMapping("/posts/{postId}")
-public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
-}
-```
 
 ### @Parameter
 
@@ -474,16 +313,7 @@ Swagger를 사용하면 브라우저에서 API 목록을 확인하고 직접 요
 
 ## 21. ddl-auto 설정
 
-`application.yml`에 JPA 설정을 추가하면 Entity 변경 사항을 DB 테이블에 자동 반영할 수 있다.
-
-```yaml
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-```
-
-`ddl-auto: update`는 `@Entity`가 붙은 클래스의 변경 사항을 DB 테이블에 자동으로 반영한다.
+`application.yml`의 JPA 설정에서 `ddl-auto: update`를 사용하면 `@Entity`가 붙은 클래스의 변경 사항을 DB 테이블에 자동으로 반영한다.
 
 ---
 
@@ -491,7 +321,7 @@ spring:
 
 ### 영속성 컨텍스트란?
 
-영속성 컨텍스트는 “엔티티를 영구 저장하는 환경”이라는 뜻이다.
+영속성 컨텍스트는 "엔티티를 영구 저장하는 환경"이라는 뜻이다.
 
 눈에 보이지 않는 개념이지만 JPA에서 매우 중요한 역할을 한다.
 
@@ -534,11 +364,6 @@ Entity는 다음과 같은 상태를 가진다.
 
 이후 같은 Entity를 다시 조회하면 DB에 쿼리를 보내지 않고 1차 캐시에서 가져온다.
 
-```java
-Post post1 = postRepository.findById(postId).orElseThrow();
-Post post2 = postRepository.findById(postId).orElseThrow();
-```
-
 두 번째 조회에서는 DB 쿼리가 발생하지 않을 수 있다.
 
 이유는 첫 번째 조회 결과가 영속성 컨텍스트의 1차 캐시에 저장되어 있기 때문이다.
@@ -548,10 +373,6 @@ Post post2 = postRepository.findById(postId).orElseThrow();
 ## 26. 쓰기 지연
 
 쓰기 지연은 SQL을 바로 DB에 보내지 않고, 영속성 컨텍스트의 SQL 저장소에 모아두었다가 트랜잭션 commit 시점에 실행하는 것이다.
-
-```java
-postRepository.save(post);
-```
 
 `save()`를 호출해도 즉시 insert 쿼리가 실행되지 않을 수 있다.
 
@@ -565,13 +386,7 @@ postRepository.save(post);
 
 영속 상태의 Entity 값이 변경되면 JPA가 이를 감지하여 update 쿼리를 자동으로 생성한다.
 
-```java
-Post post = postRepository.findById(postId).orElseThrow();
-
-post.update(request.getTitle(), request.getContent());
-```
-
-이때 별도의 `update()` 쿼리나 `save()` 호출이 없어도 트랜잭션 종료 시점에 변경 내용이 DB에 반영된다.
+별도의 `save()` 호출이 없어도 트랜잭션 종료 시점에 변경 내용이 DB에 반영된다.
 
 ---
 
@@ -593,11 +408,4 @@ Flush는 영속성 컨텍스트와 DB를 동기화하는 것이다.
 
 ## 29. 쿼리문 확인 방법
 
-실행되는 SQL 쿼리를 확인하려면 환경 변수를 추가할 수 있다.
-
-```text
-SPRING_JPA_SHOW_SQL=true
-```
-
-환경 변수가 여러 개라면 `;`로 구분한다.
-
+실행되는 SQL 쿼리를 확인하려면 `SPRING_JPA_SHOW_SQL=true` 환경 변수를 추가할 수 있다.
