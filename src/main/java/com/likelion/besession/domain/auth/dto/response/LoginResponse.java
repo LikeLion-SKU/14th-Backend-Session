@@ -11,4 +11,5 @@ public class LoginResponse {
 
     @Schema(description = "발급된 Access Token")
     private String accessToken;
+
 }
