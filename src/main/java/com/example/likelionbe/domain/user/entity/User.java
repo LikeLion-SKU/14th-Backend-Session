@@ -22,5 +22,15 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Role role = Role.USER;
 
 }
