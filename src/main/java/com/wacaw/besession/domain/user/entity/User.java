@@ -1,32 +1,45 @@
 package com.wacaw.besession.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wacaw.besession.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class User {
+@Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "user")
+public class User extends BaseTimeEntity {
 
-  @Entity
-  @Getter
-  @NoArgsConstructor
-  @AllArgsConstructor
-//  @Builder
-  @Table(name = "user")
-  public class Users extends BaseTimeEntity {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Column(unique = true)
+  private String name;
 
-    @Column(unique = true)
-    private String neme;
-  }
+  @Column(nullable = false, unique = true)
+  private String email;
+
+  @Column(nullable = false)
+  @JsonIgnore
+  private String password;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  @Builder.Default
+  private Role role = Role.USER;
 
 }
