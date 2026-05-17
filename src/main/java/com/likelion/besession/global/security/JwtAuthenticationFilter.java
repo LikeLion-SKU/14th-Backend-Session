@@ -30,23 +30,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String token = resolveToken(request);
 
     try {
-      // 토큰이 존재하고 유효한 경우
       if (token != null && jwtProvider.validateToken(token)) {
-
-        // 토큰에서 userId 추출
         Long userId = jwtProvider.getUserId(token);
-
-        // userId로 사용자 정보 조회
         CustomUserDetails userDetails = customUserDetailsService.loadUserById(userId);
-
-        // Spring Security가 사용할 인증 객체 생성
         UsernamePasswordAuthenticationToken authentication =
             new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,
                 userDetails.getAuthorities());
 
-        // 현재 요청의 인증 정보를 SecurityContext에 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception e) {
