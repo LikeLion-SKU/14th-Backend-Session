@@ -5,7 +5,9 @@ import com.example.likelionbe.domain.post.dto.request.UpdatePostRequest;
 import com.example.likelionbe.domain.post.dto.response.PostResponse;
 import com.example.likelionbe.domain.post.entity.Post;
 import com.example.likelionbe.domain.post.entity.PostFilter;
+import com.example.likelionbe.domain.post.exception.PostErrorCode;
 import com.example.likelionbe.domain.post.repository.PostRepository;
+import com.example.likelionbe.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class PostService {
 
     @Transactional
     public PostResponse updatePost(UpdatePostRequest request) {
-        Post post = postRepository.findById(request.postId()).orElseThrow(() -> new RuntimeException("post not found"));
+        Post post = postRepository.findById(request.postId()).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
         post.updatePost(request.title(), request.content());
         return toPostResponse(post);
     }
@@ -54,14 +56,15 @@ public class PostService {
 
     @Transactional
     public PostResponse getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("post not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
         post.viewPost();
         return toPostResponse(post);
     }
 
     @Transactional
     public void deletePost(Long postId) {
-        postRepository.deleteById(postId);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+        postRepository.delete(post);
     }
 
 
