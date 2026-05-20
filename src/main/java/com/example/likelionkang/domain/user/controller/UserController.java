@@ -1,5 +1,6 @@
 package com.example.likelionkang.domain.user.controller;
 
+import com.example.likelionkang.domain.global.common.BaseResponse;
 import com.example.likelionkang.domain.user.dto.SignUpRequest;
 import com.example.likelionkang.domain.user.dto.SignupResponse;
 import com.example.likelionkang.domain.user.service.UserService;
@@ -24,11 +25,11 @@ public class UserController {
 
     @Operation(summary = "회원가입", description = "이메일, 비밀번호, 이름을 입력받아 사용자를 생성하는 API")
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signUp(@Valid @RequestBody SignUpRequest request) {
+    public ResponseEntity<BaseResponse<SignupResponse>> signUp(@Valid @RequestBody SignUpRequest request) {
         SignupResponse signUpResponse = userService.signUp(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(signUpResponse);
+                .body(BaseResponse.success(signUpResponse));
     }
 }

@@ -1,5 +1,8 @@
 package com.example.likelionkang.domain.user.service;
 
+import com.example.likelionkang.domain.auth.Exception.AuthErrorCode;
+import com.example.likelionkang.domain.global.exception.CustomException;
+import com.example.likelionkang.domain.user.Exception.UserErrorCode;
 import com.example.likelionkang.domain.user.dto.SignUpRequest;
 import com.example.likelionkang.domain.user.dto.SignupResponse;
 import com.example.likelionkang.domain.user.entity.Role;
@@ -20,7 +23,7 @@ public class UserService {
 
     public SignupResponse signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new CustomException(UserErrorCode.USER_NOT_FOUND);
         }
 
         User user =

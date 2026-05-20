@@ -1,5 +1,7 @@
 package com.example.likelionkang.domain.post.service;
 
+import com.example.likelionkang.domain.global.exception.CustomException;
+import com.example.likelionkang.domain.post.Exception.PostErrorCode;
 import com.example.likelionkang.domain.post.dto.request.CreatePostRequest;
 import com.example.likelionkang.domain.post.dto.request.UpdatePostRequest;
 import com.example.likelionkang.domain.post.dto.response.PostResponse;
@@ -60,7 +62,7 @@ public class PostService {
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(()->
-                    new IllegalArgumentException("post Not Found"));
+                    new CustomException(PostErrorCode.POST_NOT_FOUND));
 
             return toPostResponse(post);
             //command + option + v
@@ -69,7 +71,7 @@ public class PostService {
     public PostResponse updatePost(Long postId, UpdatePostRequest request) {
         // 1. 수정할 객체를 db에서 불러온다.
        Post post = postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("post Not Found"));
+                new CustomException(PostErrorCode.POST_NOT_FOUND));
 
         // 2. 수정할 내용으로 바꾸기
         post.updatePost(request);
@@ -82,7 +84,9 @@ public class PostService {
     @org.springframework.transaction.annotation.Transactional
     public Boolean deletePost(Long postId) {
         // 1.postId로 db에 존재하는 객체 삭제하기
-        postRepository.deleteById(postId);
+        Post post = postRepository.findById(postId).orElseThrow(()->
+                new CustomException(PostErrorCode.POST_NOT_FOUND));
+        postRepository.delete(post);
         return true;
     }
 
