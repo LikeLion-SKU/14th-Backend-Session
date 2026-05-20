@@ -4,7 +4,9 @@ import com.likelion.besession.domain.post.dto.request.CreatePostRequest;
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.domain.post.dto.response.PostResponse;
 import com.likelion.besession.domain.post.entity.Post;
+import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.post.repository.PostRepository;
+import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +21,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public PostResponse creatPost(CreatePostRequest request){
+    public PostResponse createPost(CreatePostRequest request){
         // 1. DTO로부터 게시글 객체 생성
         Post post = Post.builder()
                 .title(request.getTitle())
@@ -55,7 +57,7 @@ public class PostService {
     @Transactional
     public PostResponse getPostById(Long postId){
         Post post = postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("post Not Found"));
+                new CustomException(PostErrorCode.POST_NOT_FOUND));
         post.increaseViewCount();
 
         return toPostResponse(post);
@@ -77,7 +79,7 @@ public class PostService {
     public PostResponse updatePost(Long postId, UpdatePostRequest request){
         // 1. 수정할 게시글 객체를 DB에서 불러옴
         Post post = postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("post Not Found"));
+                new CustomException(PostErrorCode.POST_NOT_FOUND));
         // 2. 수정할 내용으로 바꾸기
         post.updatePost(request);
         // ?. DB에 수정한 내용 저장
@@ -88,7 +90,8 @@ public class PostService {
 
     @Transactional
     public Boolean deletePost(Long postId){
-        // 1. postId로 DB에 존재하는 객체 삭제하기
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+;        // 1. postId로 DB에 존재하는 객체 삭제하기
         postRepository.deleteById(postId);
         return true;
     }

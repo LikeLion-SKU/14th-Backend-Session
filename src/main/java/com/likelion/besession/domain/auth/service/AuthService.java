@@ -2,6 +2,8 @@ package com.likelion.besession.domain.auth.service;
 
 import com.likelion.besession.domain.auth.dto.request.LoginRequest;
 import com.likelion.besession.domain.auth.dto.response.LoginResponse;
+import com.likelion.besession.domain.auth.exception.AuthErrorCode;
+import com.likelion.besession.global.exception.CustomException;
 import com.likelion.besession.global.security.CustomUserDetails;
 import com.likelion.besession.global.security.CustomUserDetailsService;
 import com.likelion.besession.global.security.JwtProvider;
@@ -23,7 +25,7 @@ public class AuthService {
                 (CustomUserDetails) customUserDetailsService.loadUserByUsername(request.getEmail());
 
         if(!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())){
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
+            throw new CustomException(AuthErrorCode.INVALID_PASSWORD);
         }
 
         String accessToken = jwtProvider.createAccessToken(userDetails);
