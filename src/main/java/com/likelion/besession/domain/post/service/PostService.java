@@ -3,7 +3,9 @@ import com.likelion.besession.domain.post.dto.request.CreatePostRequest;
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.domain.post.dto.response.PostResponse;
 import com.likelion.besession.domain.post.entity.Post;
+import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.post.repository.PostRepository;
+import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,8 +59,8 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId){
-        Post post = postRepository.findById(postId).orElseThrow(() ->
-                new IllegalArgumentException("post Not Found"));
+        Post post = postRepository.findById(postId).orElseThrow(() ->new CustomException(PostErrorCode.POST_NOT_FOUND));
+
 
         return toPostResponse(post);
     }
@@ -66,8 +68,8 @@ public class PostService {
     @Transactional
     public PostResponse updatePost(Long postId, UpdatePostRequest request){
         // 1. 수정할 게시글 객체를 DB에서 불러옴
-        Post post = postRepository.findById(postId).orElseThrow(() ->
-                new IllegalArgumentException("post Not Found"));
+        Post post = postRepository.findById(postId).orElseThrow(() ->new CustomException(PostErrorCode.POST_NOT_FOUND));
+
 
         // 2. 수정할 내용으로 바꾸기
         post.updatePost(request);
@@ -80,12 +82,14 @@ public class PostService {
     }
 
     @Transactional
-    public Boolean deletePost(Long postId){
-        // 1. postId로 DB에 존재하는 객체 삭제하기
-        postRepository.deleteById(postId);
+    public Boolean deletePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+
+        postRepository.delete(post);
+
         return true;
     }
-
     @Transactional
     public List<PostResponse> getPostsByLatest(){
         return postRepository.findAllByOrderByCreatedAtDesc()

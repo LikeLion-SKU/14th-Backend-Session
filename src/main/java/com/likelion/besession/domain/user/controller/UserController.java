@@ -3,6 +3,7 @@ package com.likelion.besession.domain.user.controller;
 import com.likelion.besession.domain.user.dto.request.SignUpRequest;
 import com.likelion.besession.domain.user.dto.response.SignUpResponse;
 import com.likelion.besession.domain.user.service.UserService;
+import com.likelion.besession.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,11 +25,13 @@ public class UserController {
 
     @Operation(summary = "회원가입", description = "이메일, 비밀번호, 이름을 입력받아 사용자를 생성하는 API")
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponse> signUp(@Valid @RequestBody SignUpRequest request) {
+    public ResponseEntity<BaseResponse<SignUpResponse>> signUp(
+            @Valid @RequestBody SignUpRequest request
+    ) {
         SignUpResponse signUpResponse = userService.signUp(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(signUpResponse);
+                .body(BaseResponse.success(signUpResponse));
     }
 }
