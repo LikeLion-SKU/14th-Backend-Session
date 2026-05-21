@@ -19,8 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     // 로그인 시 email로 사용자 조회
     @Override
     public UserDetails loadUserByUsername(String email) {
-        User user =
-                userRepository
+        User user = userRepository
                         .findByEmail(email)
                         .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
         return new CustomUserDetails(user);
@@ -28,8 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // JWT 인증 필터에서 userId로 사용자 조회
     public CustomUserDetails loadUserById(Long userId) {
-        User user =
-                userRepository
+        User user = userRepository
                         .findById(userId)
                         .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
         return new CustomUserDetails(user);

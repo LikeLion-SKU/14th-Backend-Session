@@ -4,7 +4,9 @@ import com.likjelion.besession.domain.post.dto.request.CreatePostRequest;
 import com.likjelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likjelion.besession.domain.post.dto.response.PostResponse;
 import com.likjelion.besession.domain.post.entity.Post;
+import com.likjelion.besession.domain.post.exception.PostErrorCode;
 import com.likjelion.besession.domain.post.repository.PostRepository;
+import com.likjelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -67,7 +69,7 @@ public class PostService {
 
         // findById 같은 경우 해당 게시물이 없을경우 에러가 뜨기때문에 에러 처리를 해줘야 반환값이 Post로 나옴 안그럼 Optional로 나옴
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("post not found"));
+                .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
         return toPostResponse(post);
 
@@ -77,7 +79,8 @@ public class PostService {
     @Transactional
     public PostResponse updatePost(Long postId, UpdatePostRequest request) {
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
         Post updatedPost = post.updatePost(request);
         return toPostResponse(updatedPost);
     }
@@ -85,7 +88,9 @@ public class PostService {
     //게시글 삭제
     @Transactional
     public Boolean deletePost(Long postId) {
-        postRepository.deleteById(postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+        postRepository.delete(post);
 
         return true;
 
