@@ -4,7 +4,9 @@ import com.example.besession.domain.user.dto.request.SignUpRequest;
 import com.example.besession.domain.user.dto.response.SignUpResponse;
 import com.example.besession.domain.user.entity.Role;
 import com.example.besession.domain.user.entity.User;
+import com.example.besession.domain.user.exception.UserErrorCode;
 import com.example.besession.domain.user.repository.UserRepository;
+import com.example.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class UserService {
 
     public SignUpResponse signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new CustomException(UserErrorCode.DUPLICATE_EMAIL);
         }
 
         User user =
