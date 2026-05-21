@@ -2,9 +2,11 @@ package com.likelion.besession.domain.auth.service;
 
 import com.likelion.besession.domain.auth.dto.request.LoginRequest;
 import com.likelion.besession.domain.auth.dto.response.LoginResponse;
+import com.likelion.besession.domain.auth.exception.AuthErrorCode;
 import com.likelion.besession.global.config.CustomUserDetails;
 import com.likelion.besession.global.config.CustomUserDetailsService;
 import com.likelion.besession.global.config.JwtProvider;
+import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class AuthService {
 
         // 입력한 비밀번호와 DB에 저장된 암호화 비밀번호 비교
         if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
+            throw new CustomException(AuthErrorCode.INVALID_CREDENTIALS);
         }
 
         // 로그인 성공 시 Access Token 발급

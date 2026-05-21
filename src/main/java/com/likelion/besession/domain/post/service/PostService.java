@@ -4,7 +4,9 @@ import com.likelion.besession.domain.post.dto.request.CreatePostRequest;
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.domain.post.dto.response.PostResponse;
 import com.likelion.besession.domain.post.entity.Post;
+import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.post.repository.PostRepository;
+import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,10 +54,12 @@ public class PostService {
         return postList.stream().map(post -> toPostResponse(post)).toList();
     }
 
+    // 조회수 증가(상태 변경)가 일어나므로 readOnly = true는 제외하되, 예외 처리를 교안 구조로 변경합니다.
     @Transactional
     public PostResponse getPostById(Long postId){
-        Post post = postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("post Not Found"));
+        // IllegalArgumentException 대신 커스텀 예외인 CustomException을 던지도록 수정합니다.
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new CustomException(PostErrorCode.POST_NOT_FOUND));
         post.increaseViews();
 
         return toPostResponse(post);
@@ -75,21 +79,28 @@ public class PostService {
 
     @Transactional
     public PostResponse updatePost(Long postId, UpdatePostRequest request){
-        // 1. 수정할 게시글 객체를 DB에서 불러옴
-        Post post = postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("post Not Found"));
+        // 1. 수정할 게시글 객체를 DB에서 불러옴 (커스텀 예외 적용)
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new CustomException(PostErrorCode.POST_NOT_FOUND));
+
         // 2. 수정할 내용으로 바꾸기
         post.updatePost(request);
-        // ?. DB에 수정한 내용 저장
+
+        // DB에 수정한 내용 저장 (JPA 영속성 컨텍스트의 더티 체킹 기능 덕분에 사실 save 호출은 생략해도 무방합니다.)
         postRepository.save(post);
+
         // 3. PostResponse 형태로 변환해서 반환하기
         return toPostResponse(post);
     }
 
     @Transactional
     public Boolean deletePost(Long postId){
-        // 1. postId로 DB에 존재하는 객체 삭제하기
-        postRepository.deleteById(postId);
+        // 교안 실습 내용에 맞춰, 존재하지 않는 postId를 삭제하려 할 때 예외를 발생시키도록 조회 단계를 추가합니다.
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new CustomException(PostErrorCode.POST_NOT_FOUND)); //
+
+        // 1. 불러온 엔티티 객체를 이용해 DB에서 삭제하기
+        postRepository.delete(post); //
         return true;
     }
 
@@ -99,7 +110,7 @@ public class PostService {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .views(post.getViews())
+                .views(post.getViewCount())
                 .build();
     }
 }

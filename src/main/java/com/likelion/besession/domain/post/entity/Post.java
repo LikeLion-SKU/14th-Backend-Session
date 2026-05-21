@@ -33,8 +33,8 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private int views;
+    @Column(name = "view_count", nullable = false)
+    private int viewCount = 0;
 
     public void updatePost(UpdatePostRequest request) {
         this.title = request.getTitle();
@@ -42,7 +42,7 @@ public class Post extends BaseTimeEntity {
     }
 
     public void increaseViews() {
-        this.views++;
+        this.viewCount++;
     }
     private LocalDateTime createdAt;
 }
