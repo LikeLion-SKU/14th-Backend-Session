@@ -5,7 +5,9 @@ import com.likelion.besession.domain.post.dto.request.CreatePostRequest;
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.domain.post.dto.response.PostResponse;
 import com.likelion.besession.domain.post.entity.Post;
+import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.post.repository.PostRepository;
+import com.likelion.besession.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +65,7 @@ public class PostService {
   public PostResponse getPostById(Long id) {
     //1. DB에서 해당 id를 가진 Post가져오기
     Post post = postRepository.findById(id).orElseThrow(() ->
-        new IllegalArgumentException("Post not found"));
+        new CustomException(PostErrorCode.POST_NOT_FOUND));
 
     //2. 조회수 증가
     post.increaseViewCount();
@@ -88,7 +90,7 @@ public class PostService {
   public PostResponse updatePost(Long postId, UpdatePostRequest request) {
     //1.수정할 게시글 객체 DB에서 불러오기
     Post post = postRepository.findById(postId).orElseThrow(() ->
-        new IllegalArgumentException("Post not found"));
+        new CustomException(PostErrorCode.POST_NOT_FOUND));
 
     //2.엔티티 직접 들어가서 Post객체 수정하기 -> 단지 영속성컨텍스트 안의 엔티티를 수정하기만 하면 그 변경사항을 DB에 자동 반영해줌
     post.updatePost(request);
@@ -102,11 +104,13 @@ public class PostService {
 
   @Transactional
   public Boolean deletePost(Long postId) {
-    postRepository.deleteById(postId);
+    Post post = postRepository.findById(postId).orElseThrow(() ->
+        new CustomException(PostErrorCode.POST_NOT_FOUND));
+
+    postRepository.delete(post);
 
     return true;
   }
-
 
   private PostResponse toPostResponse(Post post) {
     return PostResponse.builder()
@@ -116,6 +120,5 @@ public class PostService {
         .viewCount(post.getViewCount())
         .build();
   }
-
 
 }

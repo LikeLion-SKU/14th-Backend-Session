@@ -1,10 +1,14 @@
 package com.likelion.besession.domain.user.service;
 
+import com.likelion.besession.domain.post.entity.Post;
+import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.user.dto.request.SignUpRequest;
 import com.likelion.besession.domain.user.dto.response.SignUpResponse;
 import com.likelion.besession.domain.user.entity.Role;
 import com.likelion.besession.domain.user.entity.User;
+import com.likelion.besession.domain.user.exception.UserErrorCode;
 import com.likelion.besession.domain.user.repository.UserRepository;
+import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,10 +25,9 @@ public class UserService {
 
   @Transactional
   public SignUpResponse signUp(SignUpRequest request) {
-    if(userRepository.existsByEmail(request.getEmail())){
-      throw new IllegalArgumentException("이미 가입된 이메일 입니다");
+    if (userRepository.existsByEmail(request.getEmail())) {
+      throw new CustomException(UserErrorCode.DUPLICATE_USER);
     }
-
     User user =
         User.builder()
             .email(request.getEmail())
