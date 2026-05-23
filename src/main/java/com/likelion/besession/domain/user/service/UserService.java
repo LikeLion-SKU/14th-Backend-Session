@@ -4,7 +4,9 @@ import com.likelion.besession.domain.user.dto.request.SignUpRequest;
 import com.likelion.besession.domain.user.dto.response.SignUpResponse;
 import com.likelion.besession.domain.user.entity.Role;
 import com.likelion.besession.domain.user.entity.User;
+import com.likelion.besession.domain.user.exception.UserErrorCode;
 import com.likelion.besession.domain.user.repository.UserRepository;
+import com.likelion.besession.global.exception.CustomException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +22,7 @@ public class UserService {
 
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new CustomException(UserErrorCode.USER_DUPLICATED_EMAIL);
         }
 
         User user =

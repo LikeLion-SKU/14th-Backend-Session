@@ -2,6 +2,8 @@ package com.likelion.besession.domain.auth.service;
 
 import com.likelion.besession.domain.auth.dto.request.LoginRequest;
 import com.likelion.besession.domain.auth.dto.response.LoginResponse;
+import com.likelion.besession.domain.auth.exception.AuthErrorCode;
+import com.likelion.besession.global.exception.CustomException;
 import com.likelion.besession.global.security.CustomUserDetails;
 import com.likelion.besession.global.security.CustomUserDetailsService;
 import com.likelion.besession.global.security.JwtProvider;
@@ -26,7 +28,8 @@ public class AuthService {
 
         // 입력한 비밀번호와 DB에 저장된 암호화 비밀번호 비교
         if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
+//            throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
+            throw new CustomException(AuthErrorCode.AUTH_LOGIN_FAILED);
         }
 
         // 로그인 성공 시 Access Token 발급

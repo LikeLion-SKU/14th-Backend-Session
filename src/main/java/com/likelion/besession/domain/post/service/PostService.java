@@ -5,7 +5,9 @@ import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.domain.post.dto.response.PostResponse;
 import com.likelion.besession.domain.post.entity.Post;
 import com.likelion.besession.domain.post.entity.PostSortType;
+import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.post.repository.PostRepository;
+import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +81,7 @@ public class PostService {
     // 단건 조회(readOnly 값 false 지정 X -> 조회수 증가해야함)
     @Transactional
     public PostResponse getPostById(Long id){
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("post Not Found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
         // post.setViewCount(post.getViewCount() + 1); // 조회수 1 증가
         post.viewPost(); // 조회수 1 증가 -> 엔티티 내부 메소드로 증가
 
@@ -89,7 +91,7 @@ public class PostService {
 
     @Transactional
     public PostResponse updatePost(Long id, UpdatePostRequest updatePostRequest) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("post Not Found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
         post.updatePost(updatePostRequest);
 
@@ -101,7 +103,8 @@ public class PostService {
 
     @Transactional
     public Boolean deletePost(Long id) {
-        postRepository.deleteById(id);
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+        postRepository.delete(post);
 
         return true;
     }
