@@ -4,7 +4,9 @@ import com.wacaw.besession.domain.post.dto.request.CreatePostRequest;
 import com.wacaw.besession.domain.post.dto.request.UpdatePostRequest;
 import com.wacaw.besession.domain.post.dto.response.PostResponse;
 import com.wacaw.besession.domain.post.entity.Post;
+import com.wacaw.besession.domain.post.exception.PostErrorCode;
 import com.wacaw.besession.domain.post.repository.PostRepository;
+import com.wacaw.besession.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -69,14 +71,15 @@ public class PostService {
   @Transactional(readOnly = true)
   public PostResponse getPostById(Long postId) {
     Post post = postRepository.findById(postId).orElseThrow(() ->
-        new IllegalArgumentException("post Not Found"));
+        new CustomException(PostErrorCode.POST_NOT_FOUND));
     return toPostResponse(post);
   }
 
   @Transactional
   public PostResponse updatePost(Long postId, UpdatePostRequest request) {
     // 1. 수정할 게시글 객체 DB에서 불러옴
-    Post post = postRepository.findById(postId).orElseThrow();
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
     // 2. 수정할 내용으로 바꾸기
     post.updatePost(request);
     // 3. DB에 수정한 내용 저장 -> 필요 없음 why?
@@ -87,6 +90,8 @@ public class PostService {
 
   @Transactional
   public Boolean deletePost(Long postId) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
     // 1. postId로 DB에 존재하는 객체 삭제하기
     postRepository.deleteById(postId);
     return true;

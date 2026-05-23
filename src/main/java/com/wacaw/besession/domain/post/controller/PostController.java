@@ -4,8 +4,10 @@ import com.wacaw.besession.domain.post.dto.request.CreatePostRequest;
 import com.wacaw.besession.domain.post.dto.request.UpdatePostRequest;
 import com.wacaw.besession.domain.post.dto.response.PostResponse;
 import com.wacaw.besession.domain.post.service.PostService;
+import com.wacaw.besession.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,11 +34,12 @@ public class PostController {
       description = "요청으로 전달된 게시글 정보로 새로운 게시글을 생성하는 API"
   )
   @PostMapping("/posts")
-  public ResponseEntity<PostResponse> createPost(@RequestBody CreatePostRequest request) {
+  public ResponseEntity<BaseResponse<PostResponse>> createPost(
+      @Valid @RequestBody CreatePostRequest request) {
     PostResponse response = postService.createPost(request);
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(response);
+        .body(BaseResponse.success(201, "게시글 생성에 성공했습니다", response));
   }
 
   @Operation(
@@ -44,11 +47,11 @@ public class PostController {
       description = "모든 게시글 목록을 조회하는 API"
   )
   @GetMapping("/posts")
-  public ResponseEntity<List<PostResponse>> getAllPosts() {
+  public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPosts() {
     List<PostResponse> responses = postService.getAllPosts2();
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(responses);
+        .body(BaseResponse.success(responses));
   }
 
   @Operation(
@@ -56,11 +59,11 @@ public class PostController {
       description = "모든 게시글 목록을 최신순으로 조회하는 API"
   )
   @GetMapping("/posts/recent")
-  public ResponseEntity<List<PostResponse>> getAllPostsRecent() {
+  public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPostsRecent() {
     List<PostResponse> responses = postService.getAllPostsRecent();
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(responses);
+        .body(BaseResponse.success(responses));
   }
 
   @Operation(
@@ -68,11 +71,11 @@ public class PostController {
       description = "모든 게시글 목록을 조회순으로 조회하는 API"
   )
   @GetMapping("/posts/most-view")
-  public ResponseEntity<List<PostResponse>> getAllPostsMostView() {
+  public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPostsMostView() {
     List<PostResponse> responses = postService.getAllPostsMostView();
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(responses);
+        .body(BaseResponse.success(responses));
   }
 
   @Operation(
@@ -80,11 +83,12 @@ public class PostController {
       description = "게시글 ID로 특정 게시글을 조회하는 API"
   )
   @GetMapping("/posts/{post-id}")
-  public ResponseEntity<PostResponse> getPostById(@PathVariable("post-id") Long postId) {
+  public ResponseEntity<BaseResponse<PostResponse>> getPostById(
+      @PathVariable("post-id") Long postId) {
     PostResponse response = postService.getPostById(postId);
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(response);
+        .body(BaseResponse.success(response));
   }
 
   @Operation(
@@ -92,12 +96,12 @@ public class PostController {
       description = "게시글의 ID와 요청으로 전달된 게시글 정보로 게시글을 수정하는 API"
   )
   @PutMapping("/posts/{post-id}")
-  public ResponseEntity<PostResponse> updatePost(@PathVariable("post-id") Long postId,
-      @RequestBody UpdatePostRequest request) {
+  public ResponseEntity<BaseResponse<PostResponse>> updatePost(@PathVariable("post-id") Long postId,
+      @Valid @RequestBody UpdatePostRequest request) {
     PostResponse response = postService.updatePost(postId, request);
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(response);
+        .body(BaseResponse.success(response));
   }
 
   @Operation(
@@ -105,10 +109,10 @@ public class PostController {
       description = "게시글 ID로 특정 게시글을 삭제하는 API"
   )
   @DeleteMapping("/posts/{post-id}")
-  public ResponseEntity<Boolean> deletePost(@PathVariable("post-id") Long postId) {
+  public ResponseEntity<BaseResponse<Boolean>> deletePost(@PathVariable("post-id") Long postId) {
     Boolean response = postService.deletePost(postId);
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(response);
+        .body(BaseResponse.success(response));
   }
 }
