@@ -3,7 +3,9 @@ package com.example.likelionbe.domain.user.service;
 import com.example.likelionbe.domain.user.dto.request.SignUpRequest;
 import com.example.likelionbe.domain.user.dto.response.SignUpResponse;
 import com.example.likelionbe.domain.user.entity.User;
+import com.example.likelionbe.domain.user.exception.UserErrorCode;
 import com.example.likelionbe.domain.user.repository.UserRepository;
+import com.example.likelionbe.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +22,7 @@ public class UserService {
     @Transactional
     public SignUpResponse signUp(SignUpRequest request) {
         if(userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new CustomException(UserErrorCode.EMAIL_CONFLICT);
         }
 
         User user = User.builder()

@@ -2,7 +2,9 @@ package com.example.likelionbe.domain.auth.service;
 
 import com.example.likelionbe.domain.auth.dto.request.LoginRequest;
 import com.example.likelionbe.domain.auth.dto.response.LoginResponse;
+import com.example.likelionbe.domain.auth.exception.AuthErrorCode;
 import com.example.likelionbe.domain.user.repository.UserRepository;
+import com.example.likelionbe.global.exception.CustomException;
 import com.example.likelionbe.global.security.CustomUserDetails;
 import com.example.likelionbe.global.security.CustomUserDetailsService;
 import com.example.likelionbe.global.security.JwtProvider;
@@ -25,7 +27,7 @@ public class AuthService {
         CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(request.email());
 
         if(!passwordEncoder.matches(request.password(), userDetails.getPassword())){
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new CustomException(AuthErrorCode.INVALID_EMAIL_OR_PASSWORD);
         }
 
         String accessToken = jwtProvider.createAccessToken(userDetails);
