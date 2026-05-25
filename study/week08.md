@@ -70,5 +70,8 @@
 - cf. PATCH 요청이 오히려 PUT 요청보다 더 많은 데이터나 복잡한 내용을 포함하게 된다면, 리소스를 전체 교체하는 PUT 방식이 더 적절할 수 있습니다.
 ***
 ### 8주차 과제 제출
-> 
+> "이전 로그인 api 스웨거 함께 제출합니다!!"
+
+![bession8-1.png](besession8-1.png)
+![bession8-2.png](besession8-2.png)
 

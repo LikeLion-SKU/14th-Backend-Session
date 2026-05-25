@@ -8,9 +8,36 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum GlobalErrorCode implements BaseErrorCode {
-    INVALID_INPUT_VALUE("G001", "유효하지 않은 입력입니다.", HttpStatus.BAD_REQUEST),
-    RESOURCE_NOT_FOUND("G002", "요청한 리소스를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    INTERNAL_SERVER_ERROR("G003", "서버 내부 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    INVALID_INPUT_VALUE(
+            "G001",
+            "유효하지 않은 입력입니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+
+    RESOURCE_NOT_FOUND(
+            "G002",
+            "요청한 리소스를 찾을 수 없습니다.",
+            HttpStatus.NOT_FOUND
+    ),
+
+    INTERNAL_SERVER_ERROR(
+            "G003",
+            "서버 내부 오류가 발생했습니다.",
+            HttpStatus.INTERNAL_SERVER_ERROR
+    ),
+
+    INVALID_JSON_FORMAT(
+            "G004",
+            "JSON 포맷과 일치하지 않습니다.",
+            HttpStatus.BAD_REQUEST
+
+    ),
+    METHOD_NOT_ALLOWED(
+            "G005",
+            "지원되지 않는 메서드 요청입니다.",
+            HttpStatus.METHOD_NOT_ALLOWED
+    );
 
     private final String code;
     private final String message;
