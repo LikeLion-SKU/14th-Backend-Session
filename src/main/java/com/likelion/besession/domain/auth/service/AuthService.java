@@ -24,10 +24,10 @@ public class AuthService {
     public LoginResponse login(LoginRequest request) {
         // email로 사용자 조회
         CustomUserDetails userDetails =
-                (CustomUserDetails) customUserDetailsService.loadUserByUsername(request.getEmail());
+                (CustomUserDetails) customUserDetailsService.loadUserByUsername(request.email());
 
         // 입력한 비밀번호와 DB에 저장된 암호화 비밀번호 비교
-        if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), userDetails.getPassword())) {
             throw new CustomException(AuthErrorCode.INVALID_CREDENTIALS);
         }
 

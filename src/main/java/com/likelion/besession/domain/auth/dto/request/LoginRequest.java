@@ -2,19 +2,32 @@ package com.likelion.besession.domain.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 
-@Getter
-@NoArgsConstructor
-@Schema(title = "LoginRequest: 로그인 요청 DTO") // 타이틀 수정
-public class LoginRequest { // 클래스 이름 수정
+@Builder
+@Schema(title = "LoginRequest: 로그인 요청 DTO")
+public record LoginRequest(
 
     @NotBlank(message = "사용자 이메일 항목은 필수입니다.")
     @Schema(description = "이메일", example = "test@example.com")
-    private String email;
+    String email,
 
     @NotBlank(message = "사용자 비밀번호 항목은 필수입니다.")
     @Schema(description = "비밀번호", example = "password123")
-    private String password;
-}
+    String password
+) {}
+
+// 이전 코드 (class 방식)
+// @Getter
+// @NoArgsConstructor
+// @Schema(title = "LoginRequest: 로그인 요청 DTO")
+// public class LoginRequest {
+//
+//     @NotBlank(message = "사용자 이메일 항목은 필수입니다.")
+//     @Schema(description = "이메일", example = "test@example.com")
+//     private String email;
+//
+//     @NotBlank(message = "사용자 비밀번호 항목은 필수입니다.")
+//     @Schema(description = "비밀번호", example = "password123")
+//     private String password;
+// }

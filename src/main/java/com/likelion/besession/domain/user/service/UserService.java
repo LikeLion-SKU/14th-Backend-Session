@@ -21,15 +21,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public SignUpResponse signUp(SignUpRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new CustomException(UserErrorCode.DUPLICATE_EMAIL);
         }
 
         User user =
                 User.builder()
-                        .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .name(request.getName())
+                        .email(request.email())
+                        .password(passwordEncoder.encode(request.password()))
+                        .name(request.name())
                         .role(Role.USER)
                         .build();
 

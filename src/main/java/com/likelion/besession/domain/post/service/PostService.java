@@ -27,8 +27,8 @@ public class PostService {
     public PostResponse createPost(CreatePostRequest request){
         // 1. DTO로부터 게시글 객체 생성
         Post post = Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
+                .title(request.title())
+                .content(request.content())
                 .build();
         // 2. DB에 저장
         Post savedPost = postRepository.save(post);

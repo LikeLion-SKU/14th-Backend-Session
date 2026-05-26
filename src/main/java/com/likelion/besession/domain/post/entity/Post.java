@@ -42,7 +42,7 @@ public class Post extends BaseTimeEntity {
     }
 
     public void updatePost(UpdatePostRequest request){
-        this.title = request.getTitle();
-        this.content = request.getContent();
+        this.title = request.title();
+        this.content = request.content();
     }
 }
