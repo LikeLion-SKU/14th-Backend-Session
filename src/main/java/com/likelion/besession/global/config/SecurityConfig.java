@@ -57,6 +57,10 @@ public class SecurityConfig {
                     .requestMatchers("/api/auth/**", "/api/users/signup")
                     .permitAll()
 
+                    // 로깅 실습용 엔드포인트
+                    .requestMatchers(HttpMethod.GET, "/logs")
+                    .permitAll()
+
                     // posts 밑의 GET 요청만 누구나 접근 가능
                     .requestMatchers(HttpMethod.GET, "/api/posts/**")
                     .permitAll()
