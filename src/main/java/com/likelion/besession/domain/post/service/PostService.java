@@ -6,6 +6,7 @@ import com.likelion.besession.domain.post.dto.response.PostResponse;
 import com.likelion.besession.domain.post.entity.Post;
 import com.likelion.besession.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostService {
 
@@ -20,6 +22,8 @@ public class PostService {
 
     @Transactional
     public PostResponse createPost(CreatePostRequest createPostRequest) {
+        log.info("[PostService] 게시글 생성 요청 - title: {}", createPostRequest.getTitle());
+
         Post post = Post.builder()
                 .title(createPostRequest.getTitle())
                 .content(createPostRequest.getContent())
@@ -27,12 +31,14 @@ public class PostService {
 
         Post savedPost = postRepository.save(post);
 
+        log.info("[PostService] 게시글 생성 완료 - postId: {}, title: {}", savedPost.getId(), savedPost.getTitle());
         return toPostResponse(savedPost);
     }
 
     @Transactional(readOnly = true)
     public List<PostResponse> getAllPosts1() {
         List<Post> posts = postRepository.findAll();
+        log.debug("[PostService] 게시글 전체 조회 완료 - 총 {}건", posts.size());
         return posts.stream().map(this::toPostResponse).toList();
     }
 
@@ -43,50 +49,54 @@ public class PostService {
         for (Post post : posts) {
             postResponses.add(toPostResponse(post));
         }
+        log.debug("[PostService] 게시글 전체 조회 완료 - 총 {}건", postResponses.size());
         return postResponses;
     }
 
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
-        System.out.println("첫 게시글 찾기 전==========================");
-        Post post1 = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
-        System.out.println("첫 게시글 찾기 후==========================");
+        log.debug("[PostService] 게시글 단건 조회 - postId: {}", postId);
+        Post post1 = postRepository.findById(postId).orElseThrow(() -> {
+            log.warn("[PostService] 게시글을 찾을 수 없습니다 - postId: {}", postId);
+            return new IllegalArgumentException("Post not found");
+        });
 
-        System.out.println("두 번째 게시글 찾기 전==========================");
         Post post2 = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
-        System.out.println("두 번째 게시글 찾기 후==========================");
 
-        System.out.println("post 1 == post 2: " + (post1 == post2));
+        log.debug("[PostService] post1 == post2: {}", (post1 == post2));
 
         return toPostResponse(post1);
     }
 
     @Transactional
     public PostResponse updatePost(Long postId, UpdatePostRequest updatePostRequest) {
-        System.out.println("게시글 찾기 전==========================");
-        // 게시글 찾는 쿼리문 (1)
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
-        System.out.println("게시글 찾기 후==========================");
+        log.info("[PostService] 게시글 수정 요청 - postId: {}", postId);
 
-        System.out.println("게시글 수정 전========================");
+        // 게시글 찾는 쿼리문 (1)
+        Post post = postRepository.findById(postId).orElseThrow(() -> {
+            log.warn("[PostService] 게시글을 찾을 수 없습니다 - postId: {}", postId);
+            return new IllegalArgumentException("Post not found");
+        });
+
         // 게시글 수정 쿼리문..? (2)
         post.updatePost(updatePostRequest.getTitle(), updatePostRequest.getContent());
-        System.out.println("게시글 수정 후=========================");
 
-        System.out.println("게시글 수정 반영 전=========================");
         // 게시글 수정 내용 적용 쿼리문 (3)
         Post savedPost = postRepository.save(post);
-        System.out.println("게시글 수정 반영 후========================");
 
-        System.out.println("반환 직전========================");
+        log.info("[PostService] 게시글 수정 완료 - postId: {}, title: {}", savedPost.getId(), savedPost.getTitle());
         return toPostResponse(savedPost);
     }
 
     @Transactional
     public Boolean deletePost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        log.info("[PostService] 게시글 삭제 요청 - postId: {}", postId);
+        Post post = postRepository.findById(postId).orElseThrow(() -> {
+            log.warn("[PostService] 게시글을 찾을 수 없습니다 - postId: {}", postId);
+            return new IllegalArgumentException("Post not found");
+        });
         postRepository.delete(post); // 1차 캐시에서 삭제, SQL 쓰기 지연 저장소에 delete 쿼리 저장
-        System.out.println("After delete========================");
+        log.info("[PostService] 게시글 삭제 완료 - postId: {}", postId);
         return true;
     }
 
