@@ -28,47 +28,40 @@ public class SecurityConfig {
             JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
         http
-                .cors(cors ->
-                        cors.configurationSource(corsConfigurationSource)
-                )
-
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
-
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // API별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
+                        // 로그 확인 API 경로 수정 ("logs" -> "/logs")
+                        .requestMatchers(HttpMethod.GET, "/logs").permitAll()
 
                         // 기본 에러 경로 누구나 접근 가능
-                        .requestMatchers("/error")
-                        .permitAll()
+                        .requestMatchers("/error").permitAll()
 
                         // Swagger 문서 접근 허용
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
-                        )
-                        .permitAll()
+                        ).permitAll()
 
                         // 회원가입, 로그인 등의 API는 로그인 전에도 접근 가능
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/users/signup"
-                        )
-                        .permitAll()
+                        ).permitAll()
 
                         // posts 밑의 GET 요청만 누구나 접근 가능
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/posts/**"
-                        )
-                        .permitAll()
+                        ).permitAll()
 
                         // 그 외 모든 API는 로그인한 사용자만 접근 가능
-                        .anyRequest()
-                        .authenticated())
+                        .anyRequest().authenticated()
+                )
+                // JWT 필터 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -84,7 +77,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration
     ) throws Exception {
-
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

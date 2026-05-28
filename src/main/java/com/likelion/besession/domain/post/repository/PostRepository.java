@@ -8,6 +8,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByOrderByCreatedAtDesc();
 
-    List<Post> findAllByOrderByViewsDesc();
+    // Views 대신 엔티티 필드명인 ViewCount를 사용합니다.
+    List<Post> findAllByOrderByViewCountDesc();
 
 }

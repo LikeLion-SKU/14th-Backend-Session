@@ -3,6 +3,7 @@ package com.likelion.besession.domain.post.entity;
 import com.likelion.besession.domain.post.dto.request.UpdatePostRequest;
 import com.likelion.besession.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,4 +46,7 @@ public class Post extends BaseTimeEntity {
         this.viewCount++;
     }
     private LocalDateTime createdAt;
+
+    public void updatePost(@NotBlank(message = "제목은 비어있을 수 없습니다.") String title, @NotBlank(message = "내용은 비어있을 수 없습니다.") String content) {
+    }
 }
