@@ -24,12 +24,14 @@ public class PostService {
 
   @Transactional
   public PostResponse createPost(CreatePostRequest request) {
+    log.info("게시글 생성 Request: {}", request);
     //1. 빌더로 post 객체 생성하기
     Post post = Post.builder()
         .title(request.getTitle())
         .content(request.getContent())
         .build();
 
+    log.info("Create post: {}", post);
     //2. postRepository에 새로 만든 post 객체 담아서 save하기
     Post savedPost = postRepository.save(post);
 
@@ -46,6 +48,7 @@ public class PostService {
 
     //2. DB에서 Post 목록 가져오기
     List<Post> postList = postRepository.findAll();
+    log.debug("Get all posts {}", postList.size());
 
     //3. Post 목록을 PostResponse에 맞게 변환해서 반환
     for(Post post : postList){
@@ -58,15 +61,20 @@ public class PostService {
   public List<PostResponse> getAllPosts2() {
     List<Post> postList = postRepository.findAll();
 
+    log.debug("게시글 전체 조회 완료 - 총 {}", postList.size());
     return postList.stream().map(post -> toPostResponse(post)).toList();
   }
 
   @Transactional
   public PostResponse getPostById(Long id) {
+    log.info("게시글 단건 조회 - PostId: {}", id);
     //1. DB에서 해당 id를 가진 Post가져오기
-    Post post = postRepository.findById(id).orElseThrow(() ->
-        new CustomException(PostErrorCode.POST_NOT_FOUND));
+    Post post = postRepository.findById(id).orElseThrow(() ->{
+      log.warn("게시글을 찾을 수 없습니다 - postId: {}", id);
+      return new CustomException(PostErrorCode.POST_NOT_FOUND);
+    });
 
+    log.info("게시글 단건 조회 - Post : {}", post);
     //2. 조회수 증가
     post.increaseViewCount();
 
@@ -88,13 +96,17 @@ public class PostService {
 
   @Transactional
   public PostResponse updatePost(Long postId, UpdatePostRequest request) {
+    log.info("게시글 수정 Post Id : {}", postId);
     //1.수정할 게시글 객체 DB에서 불러오기
-    Post post = postRepository.findById(postId).orElseThrow(() ->
-        new CustomException(PostErrorCode.POST_NOT_FOUND));
+    Post post = postRepository.findById(postId).orElseThrow(() ->{
+      log.warn("게시글을 찾을 수 없습니다 - postId: {}", postId);
+      return new CustomException(PostErrorCode.POST_NOT_FOUND);
+    });
 
     //2.엔티티 직접 들어가서 Post객체 수정하기 -> 단지 영속성컨텍스트 안의 엔티티를 수정하기만 하면 그 변경사항을 DB에 자동 반영해줌
     post.updatePost(request);
 
+    log.info("게시글 수정 완료: {}, title: {}", post.getId(), post.getTitle());
     //?. DB에 수정한 내용 저장 X
     //postRepository.save(post);  -> **영속성 컨텍스트**에 저장하는 행위(필요없음!)
 

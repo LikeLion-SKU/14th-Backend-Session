@@ -18,3 +18,8 @@ cors:
 jwt:
   secret: etq3gHg/QFPkWzOftSW4QnsUMyTRbBcxqEIOv8l+9L4=
   access-token-expiration: 1800000
+
+logging:
+  level:
+    root: INFO
+    com.likelion.besession: DEBUG
