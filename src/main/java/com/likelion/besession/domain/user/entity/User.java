@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "user")
+@Table(name = "users")
 public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     @Column(nullable = false)
     private String name;
@@ -33,5 +33,14 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default // Builder로 만들게 되면 기본값을 설정해주는 어노테이션
-    private Role role = Role.USER;
+    private Role role = Role.BEGINNER;
+
+    @Column(nullable = false)
+    private String image;
+
+    // 프로필 수정 메서드
+    public void updateProfile(String name, String image) {
+        this.name = name;
+        this.image = image;
+    }
 }

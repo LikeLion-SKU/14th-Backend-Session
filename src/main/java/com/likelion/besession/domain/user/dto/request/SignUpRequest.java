@@ -21,4 +21,7 @@ public class SignUpRequest {
     @NotBlank(message = "사용자 이름 항목은 필수입니다.")
     @Schema(description = "이름", example = "홍길동")
     private String name;
+
+    @Schema(description = "프로필 사진", example = "https://example.com/images/profile.jpg")
+    private String image;
 }
