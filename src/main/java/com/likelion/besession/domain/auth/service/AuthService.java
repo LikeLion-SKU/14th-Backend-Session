@@ -8,6 +8,7 @@ import com.likelion.besession.global.security.CustomUserDetails;
 import com.likelion.besession.global.security.CustomUserDetailsService;
 import com.likelion.besession.global.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class AuthService {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -39,5 +41,10 @@ public class AuthService {
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .build();
+    }
+
+    // 로그아웃
+    public void logout(Long userId) {
+        log.info("로그아웃 성공: userId={}", userId);
     }
 }
