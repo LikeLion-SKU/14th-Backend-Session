@@ -47,6 +47,8 @@ public class SecurityConfig {
                                         // 기본 에러 경로 누구나 접근 가능
                                                 requestMatchers("/error")
                                         .permitAll()
+                                        .requestMatchers("/logs")
+                                        .permitAll()
 
                                         // Swagger 문서 접근 허용
                                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")

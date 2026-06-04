@@ -8,12 +8,14 @@ import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.post.repository.PostRepository;
 import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -22,6 +24,7 @@ public class PostService {
 
     @Transactional
     public PostResponse createPost(CreatePostRequest request){
+        // log.info("[PostService] 게시글 생성 요청 - title: {}", createPostRequest.getTitle());
         // 1. DTO로부터 게시글 객체 생성
         Post post = Post.builder()
                 .title(request.getTitle())
@@ -29,33 +32,29 @@ public class PostService {
                 .build();
         // 2. DB에 저장
         Post savedPost = postRepository.save(post);
+
+        log.info("[PostService] 게시글 생성 완료 - postId: {}, title: {}", savedPost.getId(), savedPost.getTitle());
         // 3. PostResponse 형태로 만들어서 반환
         return toPostResponse(savedPost);
     }
 
     @Transactional(readOnly = true)
     public List<PostResponse> getAllPosts1(){
-        // 1. List<PostResponse> 객체를 미리 생성
-        List<PostResponse> postResponses = new ArrayList<>();
-
-        // 2. DB에서 Post 목록을 불러오기
         List<Post> postList = postRepository.findAll();
-
-        // 3. Post 목록을 PostResponse에 맞게 변환해서 반환
-        for(Post post : postList){
-            postResponses.add(toPostResponse(post));
-        }
-        return  postResponses;
+        log.debug("[PostService] 게시글 전체 조회 완료 - 총 {}건", postList.size());
+        return postList.stream().map(post -> toPostResponse(post)).toList();
     }
 
     @Transactional(readOnly = true)
     public List<PostResponse> getAllPosts2(){
         List<Post> postList = postRepository.findAll();
+        log.debug("[PostService] 게시글 전체 조회 완료 - 총 {}건", postList.size());
         return postList.stream().map(post -> toPostResponse(post)).toList();
     }
 
     @Transactional
     public PostResponse getPostById(Long postId){
+        log.debug("[PostService] 게시글 단건 조회 - postId: {}", postId);
         Post post = postRepository.findById(postId).orElseThrow(()->
                 new CustomException(PostErrorCode.POST_NOT_FOUND));
         post.increaseViewCount();
@@ -77,6 +76,7 @@ public class PostService {
 
     @Transactional
     public PostResponse updatePost(Long postId, UpdatePostRequest request){
+        log.info("[PostService] 게시글 수정 요청 - postId: {}", postId);
         // 1. 수정할 게시글 객체를 DB에서 불러옴
         Post post = postRepository.findById(postId).orElseThrow(()->
                 new CustomException(PostErrorCode.POST_NOT_FOUND));
@@ -85,6 +85,7 @@ public class PostService {
         // ?. DB에 수정한 내용 저장
         postRepository.save(post);
         // 3. PostResponse 형태로 변환해서 반환하기
+        // log.info("[PostService] 게시글 수정 완료 - postId: {}, title: {}", savedPost.getId(), savedPost.getTitle());
         return toPostResponse(post);
     }
 

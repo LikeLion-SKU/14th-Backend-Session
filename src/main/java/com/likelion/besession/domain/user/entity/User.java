@@ -35,4 +35,9 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private Role role = Role.USER;
 
+    @Column
+    private String level = "초보";
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private com.likelion.besession.domain.contract.entity.Contract contract;
 }
