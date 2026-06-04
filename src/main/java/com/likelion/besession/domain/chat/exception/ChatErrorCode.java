@@ -1,4 +1,4 @@
-package com.likelion.besession.domain.user.exception;
+package com.likelion.besession.domain.chat.exception;
 
 import com.likelion.besession.global.exception.model.BaseErrorCode;
 import lombok.AllArgsConstructor;
@@ -7,10 +7,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum UserErrorCode implements BaseErrorCode {
+public enum ChatErrorCode implements BaseErrorCode {
 
-    DUPLICATE_EMAIL("USER4091", "이미 가입된 이메일입니다.", HttpStatus.CONFLICT),
-    USER_NOT_FOUND("USER4041", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+    CHAT_NOT_FOUND("CHAT4041", "채팅 내역을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;
