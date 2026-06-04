@@ -69,4 +69,17 @@ public class ContractController {
                 .status(HttpStatus.OK)
                 .body(BaseResponse.success(200, "계약이 삭제되었습니다.", null));
     }
+
+    // 다음 단계 계약으로 넘어가기
+    @Operation(summary = "계약 상태 진행", description = "현재 단계 체크리스트가 모두 완료된 경우 다음 단계로 진행하는 API (BEFORE → DURING → AFTER)")
+    @PatchMapping("/contracts/{contract-id}/progress")
+    public ResponseEntity<BaseResponse<ContractTypeResponse>> progressContract(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable("contract-id") Long contractId) {
+        ContractTypeResponse response = contractService.nextContract(userDetails.getUserId(), contractId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(BaseResponse.success(200, "계약 상태가 변경되었습니다.", response));
+    }
 }

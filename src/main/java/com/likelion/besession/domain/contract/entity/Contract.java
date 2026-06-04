@@ -28,4 +28,12 @@ public class Contract extends BaseTimeEntity {
     @Column(nullable = false)
     @Builder.Default
     private ContractStatus contractStatus = ContractStatus.BEFORE;
+
+    public void progressStatus() {
+        switch (this.contractStatus) {
+            case BEFORE -> this.contractStatus = ContractStatus.DURING;
+            case DURING -> this.contractStatus = ContractStatus.AFTER;
+            case AFTER -> throw new IllegalStateException("이미 계약 후 단계입니다.");
+        }
+    }
 }
