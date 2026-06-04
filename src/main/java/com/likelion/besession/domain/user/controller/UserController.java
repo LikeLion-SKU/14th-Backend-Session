@@ -1,5 +1,7 @@
 package com.likelion.besession.domain.user.controller;
 
+import com.likelion.besession.domain.contractdocs.dto.response.ContractDocsListResponse;
+import com.likelion.besession.domain.contractdocs.service.ContractDocsService;
 import com.likelion.besession.domain.user.dto.request.SignUpRequest;
 import com.likelion.besession.domain.user.dto.request.UpdateUserRequest;
 import com.likelion.besession.domain.user.dto.response.SignUpResponse;
@@ -18,6 +20,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final ContractDocsService contractDocsService;
 
     @Operation(summary = "회원가입", description = "이메일, 비밀번호, 이름을 입력받아 사용자를 생성하는 API")
     @PostMapping("/users")
@@ -68,5 +73,16 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(BaseResponse.success(200, "회원 탈퇴에 성공했습니다.", null));
+    }
+
+    @Operation(summary = "내 계약서 분석 목록 조회", description = "로그인한 사용자의 전체 계약서 분석 목록을 조회하는 API")
+    @GetMapping("/users/docs")
+    public ResponseEntity<BaseResponse<List<ContractDocsListResponse>>> getMyContractDocs(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<ContractDocsListResponse> response = contractDocsService.myContractDocs(userDetails.getUserId());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(BaseResponse.success(200, "계약서 목록 조회에 성공했습니다.", response));
     }
 }
