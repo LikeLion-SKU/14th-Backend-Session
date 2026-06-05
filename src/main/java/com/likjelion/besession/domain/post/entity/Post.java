@@ -1,7 +1,7 @@
 package com.likjelion.besession.domain.post.entity;
 
 import com.likjelion.besession.domain.post.dto.request.UpdatePostRequest;
-import com.likjelion.besession.domain.user.entity.User;
+import com.likjelion.besession.domain.user_v1.entity.UserV1;
 import com.likjelion.besession.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +23,7 @@ public class Post extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserV1 userV1;
 
     @Column(nullable = false)
     private String content;

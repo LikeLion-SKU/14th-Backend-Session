@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     # 1. SQL을 예쁘게 포맷팅해서 출력하고, 바인딩 파라미터 값을 주석으로 표시합니다.
     properties:
       hibernate:
@@ -21,7 +21,11 @@ spring:
 # 2. 바인딩되는 실제 파라미터 값(?에 들어갈 내용)을 로그로 상세히 출력합니다.
 logging:
   level:
-    org.hibernate.SQL: debug
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    com.likjelion.besession: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
     org.hibernate.orm.jdbc.bind: trace
 
 cors:
@@ -30,3 +34,4 @@ cors:
 jwt:
   secret: likelion-be-session-secret-key-must-be-at-least-32-bytes
   access-token-expiration: 1800000
+  refresh-token-expiration: 2592000000

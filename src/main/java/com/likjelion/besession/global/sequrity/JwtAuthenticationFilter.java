@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final CustomUserDetailsServiceV1 customUserDetailsServiceV1;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -34,8 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 토큰에서 userId 추출
                 Long userId = jwtProvider.getUserId(token);
 
-                // userId로 사용자 정보 조회
-                CustomUserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                // V1 먼저 조회, 없으면 week09_domain User로 fallback
+                UserDetails userDetails;
+                try {
+                    userDetails = customUserDetailsServiceV1.loadUserById(userId);
+                } catch (Exception e) {
+                    userDetails = customUserDetailsService.loadUserById(userId);
+                }
 
                 // Spring Security가 사용할 인증 객체 생성
                 UsernamePasswordAuthenticationToken authentication =

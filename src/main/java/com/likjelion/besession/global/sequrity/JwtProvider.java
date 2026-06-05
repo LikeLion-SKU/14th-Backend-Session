@@ -20,19 +20,22 @@ public class JwtProvider {
 
     private final SecretKey secretKey;
     private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 
     public JwtProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.access-token-expiration}") long accessTokenExpiration) {
+            @Value("${jwt.access-token-expiration}") long accessTokenExpiration,
+            @Value("${jwt.refresh-token-expiration}") long refreshTokenExpiration) {
 
         // JWT 서명에 사용할 SecretKey 생성
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
         // Access Token 만료 시간
         this.accessTokenExpiration = accessTokenExpiration;
+        this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    public String createAccessToken(CustomUserDetails userDetails) {
+    public String createAccessToken(CustomUserDetailsV1 userDetails) {
         Date now = new Date();
         Date expiredAt = new Date(now.getTime() + accessTokenExpiration);
 
@@ -44,13 +47,56 @@ public class JwtProvider {
 
         // Access Token 생성
         return Jwts.builder()
-                .subject(String.valueOf(userDetails.getUser().getId())) // 토큰 주인 식별값
+                .subject(String.valueOf(userDetails.getUserV1().getId())) // 토큰 주인 식별값
                 .claim("type", TOKEN_TYPE) // 토큰 타입
                 .claim("email", userDetails.getUsername()) // 사용자 이메일
                 .claim("roles", roles) // 사용자 권한
                 .issuedAt(now) // 발급 시간
                 .expiration(expiredAt) // 만료 시간
                 .signWith(secretKey) // 서명
+                .compact();
+    }
+
+    public String createRefreshToken(CustomUserDetailsV1 userDetails) {
+        Date now = new Date();
+        // 💡 엑세스 토큰보다 훨씬 긴 만료 시간을 부여합니다. (보통 2주)
+        Date expiredAt = new Date(now.getTime() + refreshTokenExpiration);
+
+        // Refresh Token 생성
+        return Jwts.builder()
+                .subject(String.valueOf(userDetails.getUserV1().getId())) // 토큰 주인 식별값 (ID)
+                .claim("type", "REFRESH_TOKEN") // 💡 엑세스 토큰과 확실히 구분되도록 타입 지정
+                .issuedAt(now)                  // 발급 시간
+                .expiration(expiredAt)          // 만료 시간
+                .signWith(secretKey)            // 서명
+                .compact();
+    }
+
+    public String createAccessToken(CustomUserDetails userDetails) {
+        Date now = new Date();
+        Date expiredAt = new Date(now.getTime() + accessTokenExpiration);
+
+        return Jwts.builder()
+                .subject(String.valueOf(userDetails.getUser().getId()))
+                .claim("type", TOKEN_TYPE)
+                .claim("email", userDetails.getUsername())
+                .claim("roles", List.of())
+                .issuedAt(now)
+                .expiration(expiredAt)
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String createRefreshToken(CustomUserDetails userDetails) {
+        Date now = new Date();
+        Date expiredAt = new Date(now.getTime() + refreshTokenExpiration);
+
+        return Jwts.builder()
+                .subject(String.valueOf(userDetails.getUser().getId()))
+                .claim("type", "REFRESH_TOKEN")
+                .issuedAt(now)
+                .expiration(expiredAt)
+                .signWith(secretKey)
                 .compact();
     }
 

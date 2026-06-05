@@ -1,7 +1,7 @@
 package com.likjelion.besession.global.sequrity;
 
-import com.likjelion.besession.domain.user.entity.User;
-import com.likjelion.besession.domain.user.repository.UserRepository;
+import com.likjelion.besession.week09_domain.user.entity.User;
+import com.likjelion.besession.week09_domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,20 +16,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    // 로그인 시 email로 사용자 조회
     @Override
     public UserDetails loadUserByUsername(String email) {
         User user = userRepository
-                        .findByEmail(email)
-                        .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+                    .findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
         return new CustomUserDetails(user);
     }
 
-    // JWT 인증 필터에서 userId로 사용자 조회
     public CustomUserDetails loadUserById(Long userId) {
         User user = userRepository
-                        .findById(userId)
-                        .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+                    .findById(userId)
+                    .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
         return new CustomUserDetails(user);
     }
 }
