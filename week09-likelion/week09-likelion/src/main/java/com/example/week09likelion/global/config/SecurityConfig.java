@@ -23,12 +23,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CorsConfigurationSource  corsConfigurationSource;
+    private final CorsConfigurationSource corsConfigurationSource;
+
     // Spring Security 설정
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                .cors( cors -> cors.configurationSource(corsConfigurationSource))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 //JWT 기반 API 서버에서는 CSRF 비활성화
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
@@ -39,26 +40,35 @@ public class SecurityConfig {
                         auth ->
                                 auth
 
+                                        // CORS preflight 요청 허용
+                                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                                        .permitAll()
+
                                         // logs 로그
-                                        .requestMatchers( HttpMethod.GET, "/logs")
+                                        .requestMatchers(HttpMethod.GET, "/logs")
                                         .permitAll()
 
                                         // 기본 에러 경로 누구나 접근 가능
                                         .requestMatchers("/error")
                                         .permitAll()
 
-
                                         // Swagger 문서 접근 허용
-                                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                                        .requestMatchers(
+                                                "/swagger-ui/**",
+                                                "/swagger-ui.html",
+                                                "/v3/api-docs/**",
+                                                "/webjars/**"
+                                        )
                                         .permitAll()
 
                                         // 회원가입, 로그인 등의 API는 로그인 전에도 접근 가능
-                                        .requestMatchers("/api/auth/**", "/api/users/signup","/api/logs")
+                                        .requestMatchers("/api/auth/**", "/api/users/signup", "/api/logs")
                                         .permitAll()
 
                                         // posts 밑의 GET 요청만 누구나 접근 가능
                                         .requestMatchers(HttpMethod.GET, "/api/posts/**")
                                         .permitAll()
+
 
                                         // 그 외 모든 API는 로그인한 사용자만 접근 가능
                                         .anyRequest()

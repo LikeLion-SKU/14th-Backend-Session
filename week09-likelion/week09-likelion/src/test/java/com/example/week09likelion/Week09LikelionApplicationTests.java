@@ -1,12 +1,11 @@
 package com.example.week09likelion;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.junit.jupiter.api.Test;
 
-@SpringBootApplication
-public class Week09LikelionApplication {
+class Week09LikelionApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Week09LikelionApplication.class, args);
+    @Test
+    void contextLoads() {
     }
+
 }

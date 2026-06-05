@@ -11,4 +11,6 @@ public interface ContractScheduleRepository extends JpaRepository<ContractSchedu
     List<ContractSchedule> findAllByContractId(Long contractId);
 
     List<ContractSchedule> findAllByContractIdAndStage(Long contractId, ScheduleStage stage);
+
+    void deleteByContractId(Long contractId);
 }

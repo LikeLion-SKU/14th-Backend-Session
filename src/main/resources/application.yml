@@ -19,3 +19,8 @@ cors:
 jwt:
   secret: V7mQp9xR2sK8zN4bY6tHcL3wE5uJfA1dG9rXp2qW
   access-token-expiration: 1800000 #30분
+
+logging:
+  level:
+    root: INFO
+    com.example.besession: DEBUG
