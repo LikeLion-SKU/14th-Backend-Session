@@ -28,6 +28,7 @@ public class PostService {
                 .content(request.content())
                 .build();
         post = postRepository.save(post);
+        log.debug("[PostService] 게시글 생성 완료 - postId: {}", post.getId());
         return toPostResponse(post);
     }
 
@@ -35,6 +36,7 @@ public class PostService {
     public PostResponse updatePost(UpdatePostRequest request) {
         Post post = postRepository.findById(request.postId()).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
         post.updatePost(request.title(), request.content());
+        log.debug("[PostService] 게시글 수정 완료 - postId: {}", post.getId());
         return toPostResponse(post);
     }
 
@@ -43,6 +45,7 @@ public class PostService {
         List<Post> posts;
         if(filter==null) {
             posts = postRepository.findAll();
+            log.debug("[PostService] 게시글 전체 조회 완료 - 총 {}건", posts.size());
             return posts.stream().map(this::toPostResponse).toList();
         }
 
@@ -51,6 +54,7 @@ public class PostService {
         } else {
             posts = postRepository.findAllByOrderByViewCountDesc();
         }
+        log.debug("[PostService] 게시글 전체 조회 완료 - 총 {}건, 조회 필터 기준: {}", posts.size(), filter.name());
         return posts.stream().map(this::toPostResponse).toList();
     }
 
@@ -58,6 +62,7 @@ public class PostService {
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
         post.viewPost();
+        log.debug("[PostService] 게시글 단건 조회 완료 - postId: {}", postId);
         return toPostResponse(post);
     }
 
@@ -65,6 +70,7 @@ public class PostService {
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
         postRepository.delete(post);
+        log.debug("[PostService] 게시글 삭제 완료 postId: {}", postId);
     }
 
 

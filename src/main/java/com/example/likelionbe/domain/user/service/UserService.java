@@ -25,16 +25,13 @@ public class UserService {
             throw new CustomException(UserErrorCode.EMAIL_CONFLICT);
         }
 
-        User user = User.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .build();
+        User user = User.createUser(request.name(), request.email(), passwordEncoder.encode(request.password()), request.userType());
         userRepository.save(user);
         return SignUpResponse.builder()
                 .userId(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
+                .userType(user.getUserType())
                 .build();
     }
 

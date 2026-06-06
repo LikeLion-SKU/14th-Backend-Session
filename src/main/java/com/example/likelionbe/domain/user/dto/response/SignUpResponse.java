@@ -1,5 +1,6 @@
 package com.example.likelionbe.domain.user.dto.response;
 
+import com.example.likelionbe.domain.user.entity.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -13,6 +14,9 @@ public record SignUpResponse(
         String email,
 
         @Schema(description = "이름", example = "홍길동")
-        String name
+        String name,
+
+        @Schema(description = "사용자 종류", example = "BUYER")
+        UserType userType
 ) {
 }

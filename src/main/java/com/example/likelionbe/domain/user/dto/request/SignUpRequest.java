@@ -1,5 +1,6 @@
 package com.example.likelionbe.domain.user.dto.request;
 
+import com.example.likelionbe.domain.user.entity.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
@@ -14,6 +15,9 @@ public record SignUpRequest(
         String password,
 
         @Schema(description = "이름", example = "홍길동")
-        String name
+        String name,
+
+        @Schema(description = "사용자 종류", example = "BUYER")
+        UserType userType
 ) {
 }

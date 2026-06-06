@@ -60,6 +60,13 @@ public class SecurityConfig {
                                     .requestMatchers(HttpMethod.GET, "/api/posts/**")
                                     .permitAll()
 
+                                    // listings GET 요청은 누구나 접근 가능 (매물 목록/상세 조회)
+                                    .requestMatchers(HttpMethod.GET, "/api/listings", "/api/listings/*")
+                                    .permitAll()
+
+                                    .requestMatchers(HttpMethod.GET, "/logs")
+                                    .permitAll()
+
                                     // 그 외 모든 API는 로그인한 사용자만 접근 가능
                                     .anyRequest()
                                     .authenticated())

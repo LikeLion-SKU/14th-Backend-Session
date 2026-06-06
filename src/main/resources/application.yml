@@ -17,3 +17,8 @@ cors:
 jwt:
   secret: jXn2pDsgYYJLbIAtrWI8LQ+GbBGI0LaYkqkSFR+jsrM=
   access-token-expiration: 1800000
+
+logging:
+  level:
+    root: INFO
+    com.example.likelionbe: DEBUG
