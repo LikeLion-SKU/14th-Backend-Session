@@ -41,9 +41,12 @@ public class SecurityConfig {
                 // API별 접근 권한 설정
                 .authorizeHttpRequests(
                         auth ->
-                                auth.
+                                auth
+
+                                .requestMatchers(HttpMethod.GET,"/logs")
+                                .permitAll()
                                         // 기본 에러 경로 누구나 접근 가능
-                                                requestMatchers("/error")
+                                .requestMatchers("/error")
                                         .permitAll()
 
                                         // Swagger 문서 접근 허용
