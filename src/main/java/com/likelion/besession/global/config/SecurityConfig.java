@@ -56,6 +56,10 @@ public class SecurityConfig {
                     .requestMatchers("/api/auth/**", "/api/users/signup")
                     .permitAll()
 
+                    // 계약 및 마이페이지 API
+                    .requestMatchers("/contracts/**", "/api/users/*/my")
+                    .permitAll()
+
                     // posts 밑의 GET 요청만 누구나 접근 가능
                     .requestMatchers(HttpMethod.GET, "/api/posts/**")
                     .permitAll()

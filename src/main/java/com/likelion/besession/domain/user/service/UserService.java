@@ -1,12 +1,12 @@
 package com.likelion.besession.domain.user.service;
 
-import com.likelion.besession.domain.post.entity.Post;
-import com.likelion.besession.domain.post.exception.PostErrorCode;
 import com.likelion.besession.domain.user.dto.request.SignUpRequest;
+import com.likelion.besession.domain.user.dto.response.MyPageResponse;
 import com.likelion.besession.domain.user.dto.response.SignUpResponse;
 import com.likelion.besession.domain.user.entity.Role;
 import com.likelion.besession.domain.user.entity.User;
 import com.likelion.besession.domain.user.exception.UserErrorCode;
+import com.likelion.besession.domain.user.exception.UserNotFoundException;
 import com.likelion.besession.domain.user.repository.UserRepository;
 import com.likelion.besession.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +42,17 @@ public class UserService {
         .userId(savedUser.getId())
         .email(savedUser.getEmail())
         .name(savedUser.getName())
+        .build();
+  }
+
+  @Transactional(readOnly = true)
+  public MyPageResponse getMyPage(Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(UserNotFoundException::new);
+
+    return MyPageResponse.builder()
+        .name(user.getName())
+        .level(user.getLevel())
         .build();
   }
 

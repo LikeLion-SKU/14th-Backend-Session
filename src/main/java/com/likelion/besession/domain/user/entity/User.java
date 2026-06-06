@@ -43,4 +43,9 @@ public class User extends BaseTimeEntity {
   @Builder.Default
   private Role role = Role.USER;
 
+  @Enumerated(EnumType.STRING)
+  @Column(length = 10)
+  @Builder.Default
+  private UserLevel level = UserLevel.초급;
+
 }
