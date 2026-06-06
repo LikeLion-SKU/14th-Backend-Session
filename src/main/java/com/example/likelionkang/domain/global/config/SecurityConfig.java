@@ -44,10 +44,13 @@ public class SecurityConfig {
                                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(
-                        auth ->
-                                auth.
+                                auth ->
+                                auth
+                                        .requestMatchers(HttpMethod.GET, "/logs")
+                                        .permitAll()
+
                                         // 기본 에러 경로 누구나 접근 가능
-                                                requestMatchers("/error")
+                                        .requestMatchers("/error")
                                         .permitAll()
 
                                         // Swagger 문서 접근 허용

@@ -1,0 +1,159 @@
+{
+  "nodes" : [ {
+    "id" : "HelloController",
+    "type" : "default",
+    "data" : {
+      "label" : "HelloController"
+    },
+    "position" : {
+      "x" : 100,
+      "y" : 100
+    }
+  }, {
+    "id" : "LoggingController",
+    "type" : "default",
+    "data" : {
+      "label" : "LoggingController"
+    },
+    "position" : {
+      "x" : 100,
+      "y" : 220
+    }
+  }, {
+    "id" : "PostController",
+    "type" : "default",
+    "data" : {
+      "label" : "PostController"
+    },
+    "position" : {
+      "x" : 100,
+      "y" : 340
+    }
+  }, {
+    "id" : "AuthController",
+    "type" : "default",
+    "data" : {
+      "label" : "AuthController"
+    },
+    "position" : {
+      "x" : 100,
+      "y" : 460
+    }
+  }, {
+    "id" : "StudentController",
+    "type" : "default",
+    "data" : {
+      "label" : "StudentController"
+    },
+    "position" : {
+      "x" : 100,
+      "y" : 580
+    }
+  }, {
+    "id" : "UserController",
+    "type" : "default",
+    "data" : {
+      "label" : "UserController"
+    },
+    "position" : {
+      "x" : 100,
+      "y" : 700
+    }
+  }, {
+    "id" : "PostService",
+    "type" : "default",
+    "data" : {
+      "label" : "PostService"
+    },
+    "position" : {
+      "x" : 450,
+      "y" : 100
+    }
+  }, {
+    "id" : "AuthService",
+    "type" : "default",
+    "data" : {
+      "label" : "AuthService"
+    },
+    "position" : {
+      "x" : 450,
+      "y" : 220
+    }
+  }, {
+    "id" : "UserService",
+    "type" : "default",
+    "data" : {
+      "label" : "UserService"
+    },
+    "position" : {
+      "x" : 450,
+      "y" : 340
+    }
+  }, {
+    "id" : "CustomUserDetailsService",
+    "type" : "default",
+    "data" : {
+      "label" : "CustomUserDetailsService"
+    },
+    "position" : {
+      "x" : 450,
+      "y" : 460
+    }
+  }, {
+    "id" : "PostRepository",
+    "type" : "default",
+    "data" : {
+      "label" : "PostRepository"
+    },
+    "position" : {
+      "x" : 800,
+      "y" : 100
+    }
+  }, {
+    "id" : "StudentRepository",
+    "type" : "default",
+    "data" : {
+      "label" : "StudentRepository"
+    },
+    "position" : {
+      "x" : 800,
+      "y" : 220
+    }
+  }, {
+    "id" : "UserRepository",
+    "type" : "default",
+    "data" : {
+      "label" : "UserRepository"
+    },
+    "position" : {
+      "x" : 800,
+      "y" : 340
+    }
+  } ],
+  "edges" : [ {
+    "id" : "e-PostController-PostService",
+    "source" : "PostController",
+    "target" : "PostService",
+    "animated" : true
+  }, {
+    "id" : "e-PostService-PostRepository",
+    "source" : "PostService",
+    "target" : "PostRepository",
+    "animated" : true
+  }, {
+    "id" : "e-AuthController-AuthService",
+    "source" : "AuthController",
+    "target" : "AuthService",
+    "animated" : true
+  }, {
+    "id" : "e-UserController-UserService",
+    "source" : "UserController",
+    "target" : "UserService",
+    "animated" : true
+  }, {
+    "id" : "e-UserService-UserRepository",
+    "source" : "UserService",
+    "target" : "UserRepository",
+    "animated" : true
+  } ]
+}

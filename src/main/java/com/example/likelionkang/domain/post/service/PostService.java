@@ -8,13 +8,13 @@ import com.example.likelionkang.domain.post.dto.response.PostResponse;
 import com.example.likelionkang.domain.post.entity.Post;
 import com.example.likelionkang.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -23,6 +23,7 @@ public class PostService {
 
     @org.springframework.transaction.annotation.Transactional
     public PostResponse createPost(CreatePostRequest request) {
+        log.info("[PosrService] 게시글 생성 요청 - title: {} ", request.getTitle());
         // 1. 게시글 객체를 통해 메서드를 만든다.
         Post post = Post.builder()
                 .title(request.getTitle())
@@ -31,8 +32,13 @@ public class PostService {
         // 2. DB에 저장
         Post savedPost = postRepository.save(post);
 
+
+        log.info("[PosrService] 게시글 생성 완료 - postId: {} , title : {} ", savedPost.getContent() , savedPost.getTitle());
         // 3. 반환
         return toPostResponse(savedPost);
+
+
+
     }
     /**
      * 게시글 전체 조회 (정렬 기능 추가)
@@ -61,25 +67,32 @@ public class PostService {
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
+        log.debug("[PosrService] 게시글 단건 조회 - postId : {}",postId);
         Post post = postRepository.findById(postId).orElseThrow(()->
                     new CustomException(PostErrorCode.POST_NOT_FOUND));
-
-            return toPostResponse(post);
+        log.warn("[PosrService] 게시글을 찾을 수 없습니다. - postId : {}",postId);
+        return toPostResponse(post);
             //command + option + v
         }
     @org.springframework.transaction.annotation.Transactional
     public PostResponse updatePost(Long postId, UpdatePostRequest request) {
+        log.info("[PosrService] 게시글 수정 요청 - postId: {} ", postId);
         // 1. 수정할 객체를 db에서 불러온다.
-       Post post = postRepository.findById(postId).orElseThrow(()->
-                new CustomException(PostErrorCode.POST_NOT_FOUND));
+       Post post = postRepository.findById(postId).orElseThrow(()-> {
+                   log.warn("[PosrService] 게시글을 찾을 수 없습니다. - postId : {} ", postId);
+                  return new CustomException(PostErrorCode.POST_NOT_FOUND);
+               });
 
         // 2. 수정할 내용으로 바꾸기
         post.updatePost(request);
 
         // 3. db에 저장
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
-        return toPostResponse(post);
+        log.info("[PosrService] 게시글 수정 완료 - postId: {} , title : {} ", savedPost.getContent() , savedPost.getTitle());
+
+
+        return toPostResponse(savedPost);
     }
     @org.springframework.transaction.annotation.Transactional
     public Boolean deletePost(Long postId) {
