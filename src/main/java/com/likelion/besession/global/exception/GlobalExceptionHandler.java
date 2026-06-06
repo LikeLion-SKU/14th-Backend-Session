@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
                         .map(e -> String.format("[%s] %s", e.getField(), e.getDefaultMessage()))
                         .collect(Collectors.joining(" / "));
         log.warn("Validation 오류 발생: {}", errorMessages);
-        return ResponseEntity.badRequest().body(BaseResponse.error(GlobalErrorCode.INVALID_INPUT_VALUE.getCode(), GlobalErrorCode.INVALID_INPUT_VALUE.getMessage()));
+        return ResponseEntity.badRequest().body(BaseResponse.error(GlobalErrorCode.INVALID_INPUT_VALUE.getCode(), errorMessages));
     }
 
     // 잘못된 JSON 형식의 요청 본문 처리 (400 Bad Request)

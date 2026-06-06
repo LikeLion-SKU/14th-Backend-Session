@@ -44,9 +44,8 @@ public class SecurityConfig {
                 // API별 접근 권한 설정
                 .authorizeHttpRequests(
                         auth ->
-                                auth.
-                                        // 기본 에러 경로 누구나 접근 가능
-                                                requestMatchers("/error")
+                                auth
+                                        .requestMatchers("/error")
                                         .permitAll()
 
                                         // Swagger 문서 접근 허용
@@ -54,11 +53,7 @@ public class SecurityConfig {
                                         .permitAll()
 
                                         // 회원가입, 로그인 등의 API는 로그인 전에도 접근 가능
-                                        .requestMatchers("/api/auth/**", "/api/users/signup")
-                                        .permitAll()
-
-                                        // posts 밑의 GET 요청만 누구나 접근 가능
-                                        .requestMatchers(HttpMethod.GET, "/api/posts/**")
+                                        .requestMatchers("/api/auth/**")
                                         .permitAll()
 
                                         // 그 외 모든 API는 로그인한 사용자만 접근 가능
