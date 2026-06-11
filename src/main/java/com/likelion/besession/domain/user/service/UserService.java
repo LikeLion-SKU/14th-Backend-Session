@@ -2,6 +2,7 @@ package com.likelion.besession.domain.user.service;
 
 import com.likelion.besession.domain.user.dto.request.SignUpRequest;
 import com.likelion.besession.domain.user.dto.response.SignUpResponse;
+import com.likelion.besession.domain.user.dto.response.UserDetailResponse;
 import com.likelion.besession.domain.user.entity.Role;
 import com.likelion.besession.domain.user.entity.User;
 import com.likelion.besession.domain.user.exception.UserErrorCode;
@@ -39,6 +40,22 @@ public class UserService {
                 .userId(savedUser.getId())
                 .email(savedUser.getEmail())
                 .name(savedUser.getName())
+                .build();
+    }
+
+    // 유저 조회
+    public UserDetailResponse getUserDetails(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+        return toUserDetailResponse(user);
+    }
+
+    // 유저 상세 DTO 변환
+    private UserDetailResponse toUserDetailResponse(User user) {
+        return UserDetailResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .level(user.getLevel())
                 .build();
     }
 }

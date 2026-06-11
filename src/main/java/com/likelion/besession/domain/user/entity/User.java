@@ -28,6 +28,9 @@ public class User extends BaseTimeEntity {
     @JsonIgnore
     private String password;
 
+    @Builder.Default
+    private Long level = 1L;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

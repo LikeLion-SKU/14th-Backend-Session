@@ -15,6 +15,6 @@ public class LoginRequest {
     private String email;
 
     @NotBlank(message = "사용자 비밀번호 항목은 필수입니다.")
-    @Schema(description = "비밀번호", example = "password123")
+    @Schema(description = "비밀번호", example = "myPassword")
     private String password;
 }
