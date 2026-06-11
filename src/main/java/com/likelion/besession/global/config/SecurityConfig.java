@@ -18,9 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-@Configuration // 설정 클래스
-@EnableWebSecurity // Spring Security 활성화
-@EnableMethodSecurity // 메서드 단위 권한 활성화
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -33,6 +33,9 @@ public class SecurityConfig {
                 // JWT 기반 API 서버에서는 CSRF 비활성화
                 .csrf(AbstractHttpConfigurer::disable)
 
+                // CORS 설정 적용
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+
                 // 서버에 로그인 상태를 저장하지 않는 Stateless 방식
                 .sessionManagement(
                         session ->
@@ -42,18 +45,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth ->
                                 auth
+                                        // Preflight 요청 허용
+                                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                                        .permitAll()
 
-                                .requestMatchers(HttpMethod.GET,"/logs")
-                                .permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/logs")
+                                        .permitAll()
+
                                         // 기본 에러 경로 누구나 접근 가능
-                                .requestMatchers("/error")
+                                        .requestMatchers("/error")
                                         .permitAll()
 
                                         // Swagger 문서 접근 허용
                                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                                         .permitAll()
 
-                                        // 회원가입, 로그인 등의 API는 로그인 전에도 접근 가능
+                                        // 회원가입, 로그인 API는 로그인 전에도 접근 가능
                                         .requestMatchers("/api/auth/**", "/api/users/signup")
                                         .permitAll()
 
@@ -69,7 +76,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 비밀번호를 암호화하고 검증할 때 사용
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
