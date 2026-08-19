@@ -16,7 +16,6 @@ public class CustomUserDetailsV1 implements UserDetails {
 
     // User 엔티티를 Spring Security에서 사용할 수 있도록 함
     private final UserV1 userV1;
-
     // 권한 목록 반환: Spring Security 권한은 "ROLE_USER", "ROLE_ADMIN" 형태
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
