@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     # 1. SQL을 예쁘게 포맷팅해서 출력하고, 바인딩 파라미터 값을 주석으로 표시합니다.
     properties:
       hibernate:
