@@ -23,6 +23,10 @@ services:
     environment:
       DB_PASSWORD: ${DB_PASSWORD}
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/likelion?serverTimezone=UTC&characterEncoding=UTF-8
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      AWS_REGION: ${AWS_REGION}
     depends_on:
       mysql:
         condition: service_healthy
