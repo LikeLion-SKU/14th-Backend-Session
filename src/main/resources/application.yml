@@ -28,6 +28,16 @@ logging:
     org.springframework.security: DEBUG
     org.hibernate.orm.jdbc.bind: trace
 
+cloud:
+  aws:
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ${AWS_REGION:eu-north-1}
+
 cors:
   allowed-origins: http://localhost:8080
 

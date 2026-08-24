@@ -23,6 +23,8 @@ public class Analysis extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String contractImageUrl;
+
     @Column(nullable = false)
     private String contractContent;
 

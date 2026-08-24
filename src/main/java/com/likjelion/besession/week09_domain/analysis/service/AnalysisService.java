@@ -3,6 +3,7 @@ package com.likjelion.besession.week09_domain.analysis.service;
 import com.likjelion.besession.global.exception.CustomException;
 import com.likjelion.besession.global.exception.GlobalErrorCode;
 import com.likjelion.besession.global.sequrity.CustomUserDetails;
+import com.likjelion.besession.global.service.S3Service;
 import com.likjelion.besession.week09_domain.analysis.dto.response.AnalysisResultResponse;
 import com.likjelion.besession.week09_domain.analysis.dto.response.AnalysisUploadResponse;
 import com.likjelion.besession.week09_domain.analysis.entity.Analysis;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Service
@@ -31,12 +33,20 @@ public class AnalysisService {
     private final ContractRepository contractRepository;
     private final AnalysisRepository analysisRepository;
     private final ReportRepository reportRepository;
+    private final S3Service s3Service;
 
     @Transactional
     public AnalysisUploadResponse uploadAndAnalyze(Long contractId, MultipartFile file, CustomUserDetails userDetails) {
         User user = userDetails.getUser();
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new CustomException(GlobalErrorCode.RESOURCE_NOT_FOUND));
+
+        String imageUrl;
+        try {
+            imageUrl = s3Service.upload(file, "contracts");
+        } catch (IOException e) {
+            throw new CustomException(GlobalErrorCode.INTERNAL_SERVER_ERROR);
+        }
 
         Report report = reportRepository.save(Report.builder()
                 .title("계약서 분석 리포트")
@@ -47,6 +57,7 @@ public class AnalysisService {
                 .build());
 
         Analysis analysis = analysisRepository.save(Analysis.builder()
+                .contractImageUrl(imageUrl)
                 .contractContent(DUMMY_CONTRACT_CONTENT)
                 .aiComment(DUMMY_AI_COMMENT)
                 .warning(DUMMY_WARNING)
